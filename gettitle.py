@@ -1,13 +1,22 @@
 #!/usr/bin/env python2
 
-import urllib2
 import sys
-from bs4 import BeautifulSoup as bs
+import mechanize
+
+ptt = "www.ptt.cc/bbs"
 
 url  = str(sys.argv[1])
-soup = bs(urllib2.urlopen(url))
+br = mechanize.Browser()
+r = br.open(url)
+
+if ptt in url and any(br.forms()):
+    br.form = list(br.forms())[0]
+    control = br.form.find_control("yes")
+    control.readonly = False
+    br['yes'] = 'yes'
+    br.submit()
 
 print
-print soup.title.string
-print url
+print br.title()
+print br.geturl()
 print
