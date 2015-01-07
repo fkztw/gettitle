@@ -3,9 +3,11 @@
 import sys
 import optparse
 import mechanize
+from HTMLParser import HTMLParser
 
 # for special sites
 ptt = 'www.ptt.cc/bbs'
+hackpad = 'hackpad.com'
 
 p = optparse.OptionParser(usage = 'usage: %prog [options] url')
 p.add_option('-m', '--markdown', action = 'store_true', dest = 'markdown', help = 'output with markdown format')
@@ -26,6 +28,12 @@ br.addheaders = [
 ]
 
 r = br.open(url)
+title = br.title()
+url   = br.geturl()
+
+if opt.debug:
+    print(r.read())
+    print(title, type(title))
 
 if ptt in url and any(br.forms()):
     br.form = list(br.forms())[0]
@@ -34,14 +42,15 @@ if ptt in url and any(br.forms()):
     br['yes'] = 'yes'
     br.submit()
 
-if opt.debug:
-    print(r.read())
+if hackpad in url:
+    parser = HTMLParser()
+    title = parser.unescape(br.title()).encode('utf-8')
 
 print('')
 
 if (opt.markdown):
-    print('[{title}]({url})'.format(title = br.title(), url = br.geturl()))
+    print('[{title}]({url})'.format(title = title, url = url))
 else:
-    print('{title}\n{url}'.format(title = br.title(), url = br.geturl()))
+    print('{title}\n{url}'.format(title = title, url = url))
 
 print('')
