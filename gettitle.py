@@ -4,15 +4,14 @@ import sys
 import optparse
 import mechanize
 
-p = optparse.OptionParser()
-p.add_option('-m', '--markdown', action = 'store_true', dest = 'markdown', help = 'output with markdown format')
-p.add_option('-d', '--debug', action = 'store_true', dest = 'debug', help = 'print debug info')
-p.set_defaults(debug = False, markdown = False)
-opt, args = p.parse_args()
-
-
 # for special sites
 ptt = 'www.ptt.cc/bbs'
+
+p = optparse.OptionParser(usage = 'usage: %prog [options] url')
+p.add_option('-m', '--markdown', action = 'store_true', dest = 'markdown', help = 'output with markdown format')
+p.add_option('-d', '--debug', action = 'store_true', dest = 'debug', help = 'print debug info')
+opt, args = p.parse_args()
+
 
 url = str(args[0])
 br  = mechanize.Browser()
