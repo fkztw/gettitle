@@ -7,14 +7,20 @@ from HTMLParser import HTMLParser
 
 # for special sites
 sites = {
-    "ptt":"www.ptt.cc/ask/over18",
-    "hackpad":"hackpad.com",
+    'ptt'    : "www.ptt.cc/ask/over18",
+    'hackpad': "hackpad.com",
 }
 
 p = argparse.ArgumentParser()
-p.add_argument('url', type = str, help = 'the url which you want to get its title')
-p.add_argument('-m', '--markdown', action = 'store_true', help = 'output with markdown format')
-p.add_argument('-d', '--debug', action = 'store_true', help = 'print debug info')
+p.add_argument( 'url',
+                type   = str,
+                help   = "the url which you want to get its title")
+p.add_argument( '-m', '--markdown',
+                action = 'store_true',
+                help   = "output with markdown format")
+p.add_argument( '-d', '--debug',
+                action = 'store_true',
+                help   = "print debug info")
 args = p.parse_args()
 
 br  = mechanize.Browser()
@@ -36,7 +42,7 @@ if args.debug:
     print(r.read())
     print(title, type(title))
 
-if sites["ptt"] in url and any(br.forms()):
+if sites['ptt'] in url and any(br.forms()):
     br.form = list(br.forms())[0]
     control = br.form.find_control('yes')
     control.readonly = False
@@ -45,7 +51,7 @@ if sites["ptt"] in url and any(br.forms()):
     title = br.title()
     url   = br.geturl()
 
-if sites["hackpad"] in url:
+if sites['hackpad'] in url:
     parser = HTMLParser()
     title = parser.unescape(br.title()).encode('utf-8')
 
