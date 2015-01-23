@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
 import sys
-import optparse
+import argparse
 import mechanize
 from HTMLParser import HTMLParser
 
@@ -11,16 +11,11 @@ sites = {
     "hackpad":"hackpad.com",
 }
 
-p = optparse.OptionParser(usage = 'usage: %prog [options] url')
-p.add_option('-m', '--markdown', action = 'store_true', dest = 'markdown', help = 'output with markdown format')
-p.add_option('-d', '--debug', action = 'store_true', dest = 'debug', help = 'print debug info')
-opt, args = p.parse_args()
-
-if args:
-    url = str(args[0])
-else:
-    p.print_help()
-    sys.exit()
+p = argparse.ArgumentParser()
+p.add_argument('url', type = str, help = 'the url which you want to get its title')
+p.add_argument('-m', '--markdown', action = 'store_true', help = 'output with markdown format')
+p.add_argument('-d', '--debug', action = 'store_true', help = 'print debug info')
+args = p.parse_args()
 
 br  = mechanize.Browser()
 br.set_handle_robots(False)
@@ -33,11 +28,11 @@ br.addheaders = [
     ('Connection', 'keep-alive')
 ]
 
-r = br.open(url)
+r = br.open(args.url)
 title = br.title()
 url   = br.geturl()
 
-if opt.debug:
+if args.debug:
     print(r.read())
     print(title, type(title))
 
@@ -56,7 +51,7 @@ if sites["hackpad"] in url:
 
 print('')
 
-if (opt.markdown):
+if (args.markdown):
     print('[{title}]({url})'.format(title = title, url = url))
 else:
     print('{title}\n{url}'.format(title = title, url = url))
