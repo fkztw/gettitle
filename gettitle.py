@@ -10,6 +10,7 @@ def main():
     sites = {
         'ptt'    : "www.ptt.cc/ask/over18",
         'hackpad': "hackpad.com",
+        'ruten'  : "goods.ruten.com.tw",
     }
 
     p = argparse.ArgumentParser()
@@ -55,6 +56,9 @@ def main():
     if sites['hackpad'] in url:
         parser = HTMLParser()
         title = parser.unescape(br.title()).encode('utf-8')
+
+    if sites['ruten'] in url:
+        title = br.title().decode('big5').encode('utf-8')
 
     print('')
 
