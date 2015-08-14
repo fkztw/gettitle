@@ -14,9 +14,10 @@ def main():
     }
 
     p = argparse.ArgumentParser()
-    p.add_argument( 'url',
+    p.add_argument( 'urls',
                     type   = str,
-                    help   = "the url which you want to get its title")
+                    nargs  = '+',
+                    help   = "the url(s) which you want to get its title")
     p.add_argument( '-m', '--markdown',
                     action = 'store_true',
                     help   = "output with markdown format")
@@ -36,38 +37,39 @@ def main():
         ('Connection', 'keep-alive')
     ]
 
-    r = br.open(args.url)
-    title = br.title()
-    url   = br.geturl()
-
-    if args.debug:
-        print(r.read())
-        print(title, type(title))
-
-    if sites['ptt'] in url and any(br.forms()):
-        br.form = list(br.forms())[0]
-        control = br.form.find_control('yes')
-        control.readonly = False
-        br['yes'] = 'yes'
-        br.submit()
+    for u in args.urls:
+        r = br.open(u)
         title = br.title()
         url   = br.geturl()
 
-    if sites['hackpad'] in url:
-        parser = HTMLParser()
-        title = parser.unescape(br.title()).encode('utf-8')
+        if args.debug:
+            print(r.read())
+            print(title, type(title))
 
-    if sites['ruten'] in url:
-        title = br.title().decode('big5').encode('utf-8')
+        if sites['ptt'] in url and any(br.forms()):
+            br.form = list(br.forms())[0]
+            control = br.form.find_control('yes')
+            control.readonly = False
+            br['yes'] = 'yes'
+            br.submit()
+            title = br.title()
+            url   = br.geturl()
 
-    print('')
+        if sites['hackpad'] in url:
+            parser = HTMLParser()
+            title = parser.unescape(br.title()).encode('utf-8')
 
-    if (args.markdown):
-        print('[{title}]({url})'.format(title = title, url = url))
-    else:
-        print('{title}\n{url}'.format(title = title, url = url))
+        if sites['ruten'] in url:
+            title = br.title().decode('big5').encode('utf-8')
 
-    print('')
+        print('')
+
+        if (args.markdown):
+            print('[{title}]({url})'.format(title = title, url = url))
+        else:
+            print('{title}\n{url}'.format(title = title, url = url))
+
+        print('')
 
 
 if __name__ == '__main__':
