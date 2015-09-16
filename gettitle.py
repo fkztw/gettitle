@@ -1,8 +1,12 @@
 #!/usr/bin/env python2
 
-import sys
 import argparse
 import mechanize
+import os
+import platform
+import sys
+
+from distutils import spawn
 from HTMLParser import HTMLParser
 
 def main():
@@ -37,6 +41,7 @@ def main():
         ('Connection', 'keep-alive')
     ]
 
+    titles_and_urls = []
     for u in args.urls:
         try:
             r = br.open(u)
@@ -67,14 +72,28 @@ def main():
         if sites['ruten'] in url:
             title = br.title().decode('big5').encode('utf-8')
 
-        print('')
 
-        if (args.markdown):
-            print('[{title}]({url})'.format(title = title, url = url))
+        if args.markdown:
+            title = '[' + title + ']'
+            url = '(' + url + ')'
+            s = '{title}{url}'.format(title = title, url = url)
         else:
-            print('{title}\n{url}'.format(title = title, url = url))
+            s = '{title}\n{url}'.format(title = title, url = url)
 
-        print('')
+        titles_and_urls.append(s)
+
+
+    print('')
+    output = '\n'.join(titles_and_urls)
+    print(output)
+    print('')
+
+    if platform.system() == 'Linux' and spawn.find_executable('xclip'):
+        os.system(
+            "echo \'{output}\' | xclip -selection clipboard".format(
+                output = output
+            )
+        )
 
 
 if __name__ == '__main__':
