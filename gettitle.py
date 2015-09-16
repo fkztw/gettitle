@@ -26,7 +26,7 @@ def main():
                     help   = "print debug info")
     args = p.parse_args()
 
-    br  = mechanize.Browser()
+    br = mechanize.Browser()
     br.set_handle_robots(False)
     br.addheaders = [
         ('User-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:33.0) Gecko/20100101 Firefox/33.0'),
@@ -38,9 +38,14 @@ def main():
     ]
 
     for u in args.urls:
-        r = br.open(u)
-        title = br.title()
-        url   = br.geturl()
+        try:
+            r = br.open(u)
+        except:
+            print("unexpected error:", sys.exc_info()[0])
+            exit()
+        else:
+            title = br.title()
+            url   = br.geturl()
 
         if args.debug:
             print(r.read())
