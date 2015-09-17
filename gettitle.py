@@ -109,10 +109,14 @@ def print_titles_and_urls(titles_and_urls):
 
 
 def copy_to_xclipboard_for_linux_users(titles_and_urls):
+
+    text = '\n'.join(titles_and_urls)[:-1]
+    # [:-1] to prevent the last '\n' to be copied.
+
     if platform.system() == 'Linux' and spawn.find_executable('xclip'):
         os.system(
-            "echo \'{output}\' | xclip -selection clipboard".format(
-                output = '\n'.join(titles_and_urls)
+            "echo \"{output}\" | xclip -selection clipboard".format(
+                output = text
             )
         )
 
