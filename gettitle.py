@@ -45,7 +45,7 @@ def get_real_title_and_url(br, title, url):
     sites = {
         'ptt'    : "www.ptt.cc/ask/over18",
         'hackpad': "hackpad.com",
-        'ruten'  : "goods.ruten.com.tw",
+        'ruten'  : "ruten.com.tw",
     }
 
     if sites['ptt'] in url and any(br.forms()):
