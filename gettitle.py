@@ -70,9 +70,9 @@ def combine_title_and_url(args, title, url):
     if args.markdown:
         title = '[' + title + ']'
         url = '(' + url + ')'
-        s = '{title}{url}'.format(title=title, url=url)
+        s = '{title}{url}\n'.format(title=title, url=url)
     else:
-        s = '{title}\n{url}'.format(title=title, url=url)
+        s = '{title}\n{url}\n'.format(title=title, url=url)
 
     return s
 
@@ -80,6 +80,7 @@ def combine_title_and_url(args, title, url):
 def get_titles_and_urls(br, args):
 
     titles_and_urls = []
+
     for u in args.urls:
         try:
             r = br.open(u)
@@ -105,7 +106,6 @@ def get_titles_and_urls(br, args):
 def print_titles_and_urls(titles_and_urls):
     print('')
     print('\n'.join(titles_and_urls))
-    print('')
 
 
 def copy_to_xclipboard_for_linux_users(titles_and_urls):
