@@ -9,14 +9,8 @@ import sys
 from distutils import spawn
 from HTMLParser import HTMLParser
 
-def main():
-    # for special sites
-    sites = {
-        'ptt'    : "www.ptt.cc/ask/over18",
-        'hackpad': "hackpad.com",
-        'ruten'  : "goods.ruten.com.tw",
-    }
 
+def get_args():
     p = argparse.ArgumentParser()
     p.add_argument( 'urls',
                     type   = str,
@@ -28,8 +22,11 @@ def main():
     p.add_argument( '-d', '--debug',
                     action = 'store_true',
                     help   = "print debug info")
-    args = p.parse_args()
 
+    return p.parse_args()
+
+
+def set_mechanize_browser():
     br = mechanize.Browser()
     br.set_handle_robots(False)
     br.addheaders = [
@@ -40,6 +37,47 @@ def main():
         ('Accept-Language', 'en-US,en;q=0.8'),
         ('Connection', 'keep-alive')
     ]
+
+    return br
+
+def get_real_title_and_url(br, title, url):
+    # for special sites
+    sites = {
+        'ptt'    : "www.ptt.cc/ask/over18",
+        'hackpad': "hackpad.com",
+        'ruten'  : "goods.ruten.com.tw",
+    }
+
+    if sites['ptt'] in url and any(br.forms()):
+        br.form = list(br.forms())[0]
+        control = br.form.find_control('yes')
+        control.readonly = False
+        br['yes'] = 'yes'
+        br.submit()
+        title = br.title()
+        url   = br.geturl()
+
+    if sites['hackpad'] in url:
+        parser = HTMLParser()
+        title = parser.unescape(br.title()).encode('utf-8')
+
+    if sites['ruten'] in url:
+        title = br.title().decode('big5').encode('utf-8')
+
+    return title, url
+
+def combine_title_and_url(args, title, url):
+    if args.markdown:
+        title = '[' + title + ']'
+        url = '(' + url + ')'
+        s = '{title}{url}'.format(title=title, url=url)
+    else:
+        s = '{title}\n{url}'.format(title=title, url=url)
+
+    return s
+
+
+def get_titles_and_urls(br, args):
 
     titles_and_urls = []
     for u in args.urls:
@@ -53,47 +91,37 @@ def main():
             url   = br.geturl()
 
         if args.debug:
+            # Print out webpage html for debugging
             print(r.read())
             print(title, type(title))
 
-        if sites['ptt'] in url and any(br.forms()):
-            br.form = list(br.forms())[0]
-            control = br.form.find_control('yes')
-            control.readonly = False
-            br['yes'] = 'yes'
-            br.submit()
-            title = br.title()
-            url   = br.geturl()
-
-        if sites['hackpad'] in url:
-            parser = HTMLParser()
-            title = parser.unescape(br.title()).encode('utf-8')
-
-        if sites['ruten'] in url:
-            title = br.title().decode('big5').encode('utf-8')
-
-
-        if args.markdown:
-            title = '[' + title + ']'
-            url = '(' + url + ')'
-            s = '{title}{url}'.format(title = title, url = url)
-        else:
-            s = '{title}\n{url}'.format(title = title, url = url)
-
+        title, url = get_real_title_and_url(br, title, url)
+        s = combine_title_and_url(args, title, url)
         titles_and_urls.append(s)
 
+    return titles_and_urls
 
+
+def print_titles_and_urls(titles_and_urls):
     print('')
-    output = '\n'.join(titles_and_urls)
-    print(output)
+    print('\n'.join(titles_and_urls))
     print('')
 
+
+def copy_to_xclipboard_for_linux_users(titles_and_urls):
     if platform.system() == 'Linux' and spawn.find_executable('xclip'):
         os.system(
             "echo \'{output}\' | xclip -selection clipboard".format(
-                output = output
+                output = '\n'.join(titles_and_urls)
             )
         )
+
+def main():
+    args = get_args()
+    br = set_mechanize_browser()
+    titles_and_urls = get_titles_and_urls(br, args)
+    print_titles_and_urls(titles_and_urls)
+    copy_to_xclipboard_for_linux_users(titles_and_urls)
 
 
 if __name__ == '__main__':
