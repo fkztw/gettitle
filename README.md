@@ -1,6 +1,8 @@
 # Gettitle  
   
-A Python2 script depends on Machanize to grab the title of the url.  
+A Python2 script depends on mechanize to grab the title(s) of the url(s).  
+Can print out in normal or markdown format.  
+Currently support auto copy to clipboard via `xclip`.  
   
   
 ## Usage  
