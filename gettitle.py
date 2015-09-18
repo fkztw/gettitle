@@ -57,11 +57,11 @@ def get_real_title_and_url(br, title, url):
         title = br.title()
         url   = br.geturl()
 
-    if sites['hackpad'] in url:
+    elif sites['hackpad'] in url:
         parser = HTMLParser()
         title = parser.unescape(br.title()).encode('utf-8')
 
-    if sites['ruten'] in url:
+    elif sites['ruten'] in url:
         title = br.title().decode('big5').encode('utf-8')
 
     return title, url
