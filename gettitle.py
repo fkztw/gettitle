@@ -82,6 +82,10 @@ def get_titles_and_urls(br, args):
     titles_and_urls = []
 
     for u in args.urls:
+
+        if not any(s in u for s in ('http://', 'https://')):
+            u = 'http://' + u
+
         try:
             r = br.open(u)
         except:
