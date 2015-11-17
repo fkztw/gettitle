@@ -8,8 +8,11 @@ import sys
 import urllib
 
 import robobrowser
+import dryscrape
 
 from distutils import spawn
+
+from bs4 import BeautifulSoup as bs
 
 
 def get_args():
@@ -47,14 +50,9 @@ def set_browser():
     return br
 
 
-special_sites = {
-    'ptt': "www.ptt.cc/ask/over18"
-}
+def get_title_and_url(br, title, url, sites):
 
-
-def get_real_title_and_url(br, title, url):
-
-    if special_sites['ptt'] in url:
+    if sites['ptt'] in url:
         # import pdb; pdb.set_trace()
         form = br.get_form(action="/ask/over18")
         if form:
@@ -90,21 +88,43 @@ def check_and_reconstruct_url(url):
 def get_titles_and_urls(br, args):
 
     titles_and_urls = []
+    sites = {
+        'javascript': {
+            'dcard': "www.dcard.tw"
+        },
+        'other': {
+            'ptt': "www.ptt.cc/ask/over18"
+        }
+    }
 
     for url_from_user in args.urls:
         url_from_user = check_and_reconstruct_url(url_from_user)
 
-        try:
-            br.open(url_from_user)
-        except:
-            print("unexpected error:", sys.exc_info()[0])
-            exit()
+        for site, url in sites['javascript'].items():
+            if url in url_from_user:
+                js_br = dryscrape.Session()
+                try:
+                    js_br.visit(url_from_user)
+                except:
+                    print("unexpected error:", sys.exc_info()[0])
+                    exit()
+                else:
+                    page = bs(js_br.body(), 'lxml')
+                    title = html.unescape(page.title.string)
+                    url = js_br.url()
+                    break
         else:
-            page = br.parsed
-            url = br.url
-            title = html.unescape(page.title.string)
+            try:
+                br.open(url_from_user)
+            except:
+                print("unexpected error:", sys.exc_info()[0])
+                exit()
+            else:
+                page = br.parsed
+                title = html.unescape(page.title.string)
+                url = br.url
 
-        title, url = get_real_title_and_url(br, title, url)
+        title, url = get_title_and_url(br, title, url, sites['other'])
         s = combine_title_and_url(args, title, url)
         titles_and_urls.append(s)
 
