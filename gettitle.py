@@ -12,16 +12,16 @@ from HTMLParser import HTMLParser
 
 def get_args():
     p = argparse.ArgumentParser()
-    p.add_argument( 'urls',
-                    type   = str,
-                    nargs  = '+',
-                    help   = "the url(s) which you want to get its title")
-    p.add_argument( '-m', '--markdown',
-                    action = 'store_true',
-                    help   = "output with markdown format")
-    p.add_argument( '-d', '--debug',
-                    action = 'store_true',
-                    help   = "print debug info")
+    p.add_argument('urls',
+                   type=str,
+                   nargs='+',
+                   help="the url(s) which you want to get its title")
+    p.add_argument('-m', '--markdown',
+                   action='store_true',
+                   help="output with markdown format")
+    p.add_argument('-d', '--debug',
+                   action='store_true',
+                   help="print debug info")
 
     return p.parse_args()
 
@@ -30,8 +30,13 @@ def set_mechanize_browser():
     br = mechanize.Browser()
     br.set_handle_robots(False)
     br.addheaders = [
-        ('User-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:33.0) Gecko/20100101 Firefox/33.0'),
-        ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
+        ('User-agent', ('Mozilla/5.0 '
+                        '(Macintosh; Intel Mac OS X 10.9; rv:33.0) '
+                        'Gecko/20100101 Firefox/33.0')),
+        ('Accept', ('text/html,'
+                    'application/xhtml+xml,'
+                    'application/xml;'
+                    'q=0.9,*/*;q=0.8')),
         ('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3'),
         ('Accept-Encoding', 'none'),
         ('Accept-Language', 'en-US,en;q=0.8'),
@@ -40,12 +45,13 @@ def set_mechanize_browser():
 
     return br
 
+
 def get_real_title_and_url(br, title, url):
     # for special sites
     sites = {
-        'ptt'    : "www.ptt.cc/ask/over18",
+        'ptt': "www.ptt.cc/ask/over18",
         'hackpad': "hackpad.com",
-        'ruten'  : "ruten.com.tw",
+        'ruten': "ruten.com.tw",
     }
 
     if sites['ptt'] in url and any(br.forms()):
@@ -55,7 +61,7 @@ def get_real_title_and_url(br, title, url):
         br['yes'] = 'yes'
         br.submit()
         title = br.title()
-        url   = br.geturl()
+        url = br.geturl()
 
     elif sites['hackpad'] in url:
         parser = HTMLParser()
@@ -65,6 +71,7 @@ def get_real_title_and_url(br, title, url):
         title = br.title().decode('big5').encode('utf-8')
 
     return title, url
+
 
 def combine_title_and_url(args, title, url):
     if args.markdown:
@@ -93,7 +100,7 @@ def get_titles_and_urls(br, args):
             exit()
         else:
             title = br.title()
-            url   = br.geturl()
+            url = br.geturl()
 
         if args.debug:
             # Print out webpage html for debugging
@@ -120,9 +127,10 @@ def copy_to_xclipboard_for_linux_users(titles_and_urls):
     if platform.system() == 'Linux' and spawn.find_executable('xclip'):
         os.system(
             "echo \"{output}\" | xclip -selection clipboard".format(
-                output = text
+                output=text
             )
         )
+
 
 def main():
     args = get_args()
