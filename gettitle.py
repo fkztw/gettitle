@@ -1,13 +1,15 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import argparse
-import mechanize
+import html
 import os
 import platform
 import sys
+import urllib
+
+import robobrowser
 
 from distutils import spawn
-from HTMLParser import HTMLParser
 
 
 def get_args():
@@ -26,49 +28,40 @@ def get_args():
     return p.parse_args()
 
 
-def set_mechanize_browser():
-    br = mechanize.Browser()
-    br.set_handle_robots(False)
-    br.addheaders = [
-        ('User-agent', ('Mozilla/5.0 '
-                        '(Macintosh; Intel Mac OS X 10.9; rv:33.0) '
-                        'Gecko/20100101 Firefox/33.0')),
-        ('Accept', ('text/html,'
-                    'application/xhtml+xml,'
-                    'application/xml;'
-                    'q=0.9,*/*;q=0.8')),
-        ('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3'),
-        ('Accept-Encoding', 'none'),
-        ('Accept-Language', 'en-US,en;q=0.8'),
-        ('Connection', 'keep-alive')
-    ]
+def set_browser():
+    br = robobrowser.RoboBrowser(parser='lxml')
+    br.session.headers = {
+        'User-agent': ('Mozilla/5.0 '
+                       '(Macintosh; Intel Mac OS X 10.9; rv:33.0) '
+                       'Gecko/20100101 Firefox/33.0'),
+        'Accept': ('text/html,'
+                   'application/xhtml+xml,'
+                   'application/xml;'
+                   'q=0.9,*/*;q=0.8'),
+        'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
+        'Accept-Encoding': 'none',
+        'Accept-Language': 'en-US,en;q=0.8',
+        'Connection': 'keep-alive'
+    }
 
     return br
 
 
+special_sites = {
+    'ptt': "www.ptt.cc/ask/over18"
+}
+
+
 def get_real_title_and_url(br, title, url):
-    # for special sites
-    sites = {
-        'ptt': "www.ptt.cc/ask/over18",
-        'hackpad': "hackpad.com",
-        'ruten': "ruten.com.tw",
-    }
 
-    if sites['ptt'] in url and any(br.forms()):
-        br.form = list(br.forms())[0]
-        control = br.form.find_control('yes')
-        control.readonly = False
-        br['yes'] = 'yes'
-        br.submit()
-        title = br.title()
-        url = br.geturl()
-
-    elif sites['hackpad'] in url:
-        parser = HTMLParser()
-        title = parser.unescape(br.title()).encode('utf-8')
-
-    elif sites['ruten'] in url:
-        title = br.title().decode('big5').encode('utf-8')
+    if special_sites['ptt'] in url:
+        # import pdb; pdb.set_trace()
+        form = br.get_form(action="/ask/over18")
+        if form:
+            br.submit_form(form, submit=form['yes'])
+            page = br.parsed
+            url = br.url
+            title = html.unescape(page.title.string)
 
     return title, url
 
@@ -77,39 +70,47 @@ def combine_title_and_url(args, title, url):
     if args.markdown:
         title = '[' + title + ']'
         url = '(' + url + ')'
-        s = '{title}{url}\n'.format(title=title, url=url)
+        s = '{title}{url}\n'
     else:
-        s = '{title}\n{url}\n'.format(title=title, url=url)
+        s = '{title}\n{url}\n'
 
-    return s
+    return s.format(title=title, url=url)
+
+
+def check_and_reconstruct_url(url):
+    url_components = urllib.parse.urlparse(url)
+
+    if url_components.scheme not in ('http', 'https'):
+        url_components.scheme = 'http'
+        url = urllib.parse.urlunparse(url_components)
+
+    return url
 
 
 def get_titles_and_urls(br, args):
 
     titles_and_urls = []
 
-    for u in args.urls:
-
-        if not any(s in u for s in ('http://', 'https://')):
-            u = 'http://' + u
+    for url_from_user in args.urls:
+        url_from_user = check_and_reconstruct_url(url_from_user)
 
         try:
-            r = br.open(u)
+            br.open(url_from_user)
         except:
             print("unexpected error:", sys.exc_info()[0])
             exit()
         else:
-            title = br.title()
-            url = br.geturl()
-
-        if args.debug:
-            # Print out webpage html for debugging
-            print(r.read())
-            print(title, type(title))
+            page = br.parsed
+            url = br.url
+            title = html.unescape(page.title.string)
 
         title, url = get_real_title_and_url(br, title, url)
         s = combine_title_and_url(args, title, url)
         titles_and_urls.append(s)
+
+        if args.debug:
+            print(page.prettify())
+            print(title, type(title))
 
     return titles_and_urls
 
@@ -134,7 +135,7 @@ def copy_to_xclipboard_for_linux_users(titles_and_urls):
 
 def main():
     args = get_args()
-    br = set_mechanize_browser()
+    br = set_browser()
     titles_and_urls = get_titles_and_urls(br, args)
     print_titles_and_urls(titles_and_urls)
     copy_to_xclipboard_for_linux_users(titles_and_urls)
