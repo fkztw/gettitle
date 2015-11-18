@@ -53,7 +53,6 @@ def set_browser():
 def get_title_and_url(br, title, url, sites):
 
     if sites['ptt'] in url:
-        # import pdb; pdb.set_trace()
         form = br.get_form(action="/ask/over18")
         if form:
             br.submit_form(form, submit=form['yes'])
@@ -79,8 +78,7 @@ def check_and_reconstruct_url(url):
     url_components = urllib.parse.urlparse(url)
 
     if url_components.scheme not in ('http', 'https'):
-        url_components.scheme = 'http'
-        url = urllib.parse.urlunparse(url_components)
+        url = urllib.parse.urlunparse(url_components._replace(scheme='http'))
 
     return url
 
@@ -98,7 +96,7 @@ def get_titles_and_urls(br, args):
     }
 
     for url_from_user in args.urls:
-        url_from_user = check_and_reconstruct_url(url_from_user)
+        url_from_user = check_and_reconstruct_url(url_from_user.strip())
 
         for site, url in sites['javascript'].items():
             if url in url_from_user:
