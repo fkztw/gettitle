@@ -17,16 +17,23 @@ from bs4 import BeautifulSoup as bs
 
 def get_args():
     p = argparse.ArgumentParser()
-    p.add_argument('urls',
-                   type=str,
-                   nargs='+',
-                   help="the url(s) which you want to get its title")
-    p.add_argument('-m', '--markdown',
-                   action='store_true',
-                   help="output with markdown format")
-    p.add_argument('-d', '--debug',
-                   action='store_true',
-                   help="print debug info")
+    p.add_argument(
+        'urls',
+        metavar='url',
+        type=str,
+        nargs='+',
+        help="url(s) of the webpage",
+    )
+    p.add_argument(
+        '-m', '--markdown',
+        action='store_true',
+        help="output with markdown format",
+    )
+    p.add_argument(
+        '-d', '--debug',
+        action='store_true',
+        help="print out webpage source code and title for debugging",
+    )
 
     return p.parse_args()
 
