@@ -1,20 +1,25 @@
 # Gettitle  
   
-A Python2 script depends on mechanize to grab the title(s) of the url(s).  
+A Python 3 script depends on [robobrowser](https://github.com/jmcarp/robobrowser) and [dryscrape](https://github.com/niklasb/dryscrape) to grab the title of webpage (even the webpages use JavaScript).  
 Can print out in normal or markdown format.  
 Currently support auto copy to clipboard via `xclip`.  
   
+---  
+  
+## Installation  
+  
+`$ pip install git+https://github.com/M157q/gettitle`  
   
 ## Usage  
   
 ```  
-usage: gettitle.py [-h] [-m] [-d] urls [urls ...]  
+usage: gettitle.py [-h] [-m] [-d] url [url ...]  
   
 positional arguments:  
-  urls            the url(s) which you want to get its title  
+  url             url(s) of the webpage  
   
 optional arguments:  
   -h, --help      show this help message and exit  
   -m, --markdown  output with markdown format  
-  -d, --debug     print debug info  
+  -d, --debug     print out webpage source code and title for debugging  
 ```  
