@@ -23,3 +23,7 @@ optional arguments:
   -m, --markdown  output with markdown format  
   -d, --debug     print out webpage source code and title for debugging  
 ```  
+  
+## Testing  
+  
+`$ python -m unittest`  
