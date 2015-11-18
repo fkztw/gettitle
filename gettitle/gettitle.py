@@ -82,9 +82,10 @@ def combine_title_and_url(args, title, url):
 
 
 def check_and_reconstruct_url(url):
+    url = url.strip()
     url_components = urllib.parse.urlparse(url)
 
-    if url_components.scheme not in ('http', 'https'):
+    if url and url_components.scheme not in ('http', 'https'):
         url = urllib.parse.urlunparse(url_components._replace(scheme='http'))
 
     return url
@@ -103,7 +104,7 @@ def get_titles_and_urls(br, args):
     }
 
     for url_from_user in args.urls:
-        url_from_user = check_and_reconstruct_url(url_from_user.strip())
+        url_from_user = check_and_reconstruct_url(url_from_user)
 
         for site, url in sites['javascript'].items():
             if url in url_from_user:
