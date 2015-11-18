@@ -19,8 +19,7 @@ setup(
     author_email='M157q.tw@gmail.com',
     url="https://github.com/M157q/gettitle",
     keywords="cli, webpage, title",
-    description="Get webpage title(s) by url(s)."
-                "Print out to stdout in normal or markdown format.",
+    description="Get webpage title by url from terminal.",
     platforms=['Linux'],
     license='MIT',
     classifiers=[
