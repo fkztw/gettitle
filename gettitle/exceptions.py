@@ -1,0 +1,2 @@
+class EmptyUrlError(Exception):
+    pass

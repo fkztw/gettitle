@@ -4,15 +4,17 @@ import argparse
 import html
 import os
 import platform
-import sys
+import traceback
 import urllib
-
-import robobrowser
-import dryscrape
-
 from distutils import spawn
 
+import dryscrape
+import requests
+import robobrowser
 from bs4 import BeautifulSoup as bs
+
+import gettitle.exceptions
+import gettitle.handles
 
 
 def get_args():
@@ -85,10 +87,20 @@ def check_and_reconstruct_url(url):
     url = url.strip()
     url_components = urllib.parse.urlparse(url)
 
-    if url and url_components.scheme not in ('http', 'https'):
-        url = urllib.parse.urlunparse(url_components._replace(scheme='http'))
+    if not url:
+        raise gettitle.exceptions.EmptyUrlError
+    elif not url_components.scheme:
+        url = "{}://{}".format('http', url)
+        url_components = urllib.parse.urlparse(url)
+    elif url_components.scheme not in ('http', 'https'):
+        url_components = url_components._replace(scheme='http')
+
+    url = urllib.parse.urlunparse(url_components)
 
     return url
+
+    if args.debug:
+        traceback.print_exc()
 
 
 def get_titles_and_urls(br, args):
@@ -104,16 +116,18 @@ def get_titles_and_urls(br, args):
     }
 
     for url_from_user in args.urls:
-        url_from_user = check_and_reconstruct_url(url_from_user)
+        try:
+            checked_url = check_and_reconstruct_url(url_from_user)
+        except gettitle.exceptions.EmptyUrlError:
+            continue
 
         for site, url in sites['javascript'].items():
-            if url in url_from_user:
+            if url in checked_url:
                 js_br = dryscrape.Session()
                 try:
-                    js_br.visit(url_from_user)
+                    js_br.visit(checked_url)
                 except:
-                    print("unexpected error:", sys.exc_info()[0])
-                    exit()
+                    gettitle.handles.handle_error(e, args.debug)
                 else:
                     page = bs(js_br.body(), 'lxml')
                     title = html.unescape(page.title.string)
@@ -121,10 +135,14 @@ def get_titles_and_urls(br, args):
                     break
         else:
             try:
-                br.open(url_from_user)
+                br.open(checked_url)
+            except requests.exceptions.InvalidURL:
+                print("InvalidURL")
+            except requests.exceptions.ConnectionError as e:
+                gettitle.handles.handle_error(e, args.debug, url=url_from_user)
+                continue
             except:
-                print("unexpected error:", sys.exc_info()[0])
-                exit()
+                gettitle.handles.handle_error(e, args.debug)
             else:
                 page = br.parsed
                 title = html.unescape(page.title.string)
@@ -142,12 +160,12 @@ def get_titles_and_urls(br, args):
 
 
 def print_titles_and_urls(titles_and_urls):
-    print('')
-    print('\n'.join(titles_and_urls))
+    if titles_and_urls:
+        print('')
+        print('\n'.join(titles_and_urls))
 
 
 def copy_to_xclipboard_for_linux_users(titles_and_urls):
-
     text = '\n'.join(titles_and_urls)[:-1]
     # [:-1] to prevent the last '\n' to be copied.
 
