@@ -112,6 +112,7 @@ def visit_with_no_js_browser(br, url, debug):
         print("InvalidURL")
     except requests.exceptions.ConnectionError as e:
         gettitle.handles.handle_error(e, debug, url=url)
+        raise gettitle.exceptions.ConnectionError
     except:
         gettitle.handles.handle_error(e, debug)
     else:
@@ -146,9 +147,13 @@ def get_titles_and_urls(br, args):
                                                          args.debug)
                 break
         else:
-            page, title, url = visit_with_no_js_browser(br['no_js'],
-                                                        checked_url,
-                                                        args.debug)
+            try:
+                page, title, url = visit_with_no_js_browser(br['no_js'],
+                                                            checked_url,
+                                                            args.debug)
+            except gettitle.exceptions.ConnectionError:
+                continue
+
         if page is None:
             continue
 
@@ -189,4 +194,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    status = main()
+    sys.exit(status)
