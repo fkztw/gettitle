@@ -4,7 +4,7 @@ import argparse
 import html
 import os
 import platform
-import traceback
+import sys
 import urllib
 from distutils import spawn
 
@@ -13,6 +13,7 @@ import requests
 import robobrowser
 from bs4 import BeautifulSoup as bs
 
+import gettitle.constants
 import gettitle.exceptions
 import gettitle.handles
 
@@ -41,8 +42,8 @@ def get_args():
 
 
 def set_browser():
-    br = robobrowser.RoboBrowser(parser='lxml')
-    br.session.headers = {
+    no_js_br = robobrowser.RoboBrowser(parser='lxml')
+    no_js_br.session.headers = {
         'User-agent': ('Mozilla/5.0 '
                        '(Macintosh; Intel Mac OS X 10.9; rv:33.0) '
                        'Gecko/20100101 Firefox/33.0'),
@@ -56,20 +57,9 @@ def set_browser():
         'Connection': 'keep-alive'
     }
 
-    return br
+    js_br = dryscrape.Session()
 
-
-def get_title_and_url(br, title, url, sites):
-
-    if sites['ptt'] in url:
-        form = br.get_form(action="/ask/over18")
-        if form:
-            br.submit_form(form, submit=form['yes'])
-            page = br.parsed
-            url = br.url
-            title = html.unescape(page.title.string)
-
-    return title, url
+    return {'no_js': no_js_br, 'js': js_br}
 
 
 def combine_title_and_url(args, title, url):
@@ -95,25 +85,53 @@ def check_and_reconstruct_url(url):
     elif url_components.scheme not in ('http', 'https'):
         url_components = url_components._replace(scheme='http')
 
-    url = urllib.parse.urlunparse(url_components)
+    return urllib.parse.urlunparse(url_components)
 
-    return url
 
-    if args.debug:
-        traceback.print_exc()
+def visit_with_js_browser(js_br, url, debug):
+    page, title, real_url = None, None, None
+
+    try:
+        js_br.visit(url)
+    except:
+        gettitle.handles.handle_error(sys.exc_info()[0], debug)
+    else:
+        page = bs(js_br.body(), 'lxml')
+        title = html.unescape(page.title.string)
+        real_url = js_br.url()
+
+    return page, title, real_url
+
+
+def visit_with_no_js_browser(br, url, debug):
+    page, title, real_url = None, None, None
+
+    try:
+        br.open(url)
+    except requests.exceptions.InvalidURL:
+        print("InvalidURL")
+    except requests.exceptions.ConnectionError as e:
+        gettitle.handles.handle_error(e, debug, url=url)
+    except:
+        gettitle.handles.handle_error(e, debug)
+    else:
+        page = br.parsed
+        title = html.unescape(page.title.string)
+        real_url = br.url
+
+    if gettitle.constants.sites['other']['ptt'] in real_url:
+        form = br.get_form(action="/ask/over18")
+        if form:
+            br.submit_form(form, submit=form['yes'])
+            page = br.parsed
+            real_url = br.url
+            title = html.unescape(page.title.string)
+
+    return page, title, real_url
 
 
 def get_titles_and_urls(br, args):
-
     titles_and_urls = []
-    sites = {
-        'javascript': {
-            'dcard': "www.dcard.tw"
-        },
-        'other': {
-            'ptt': "www.ptt.cc/ask/over18"
-        }
-    }
 
     for url_from_user in args.urls:
         try:
@@ -121,34 +139,19 @@ def get_titles_and_urls(br, args):
         except gettitle.exceptions.EmptyUrlError:
             continue
 
-        for site, url in sites['javascript'].items():
+        for site, url in gettitle.constants.sites['javascript'].items():
             if url in checked_url:
-                js_br = dryscrape.Session()
-                try:
-                    js_br.visit(checked_url)
-                except:
-                    gettitle.handles.handle_error(e, args.debug)
-                else:
-                    page = bs(js_br.body(), 'lxml')
-                    title = html.unescape(page.title.string)
-                    url = js_br.url()
-                    break
+                page, title, url = visit_with_js_browser(br['js'],
+                                                         checked_url,
+                                                         args.debug)
+                break
         else:
-            try:
-                br.open(checked_url)
-            except requests.exceptions.InvalidURL:
-                print("InvalidURL")
-            except requests.exceptions.ConnectionError as e:
-                gettitle.handles.handle_error(e, args.debug, url=url_from_user)
-                continue
-            except:
-                gettitle.handles.handle_error(e, args.debug)
-            else:
-                page = br.parsed
-                title = html.unescape(page.title.string)
-                url = br.url
+            page, title, url = visit_with_no_js_browser(br['no_js'],
+                                                        checked_url,
+                                                        args.debug)
+        if page is None:
+            continue
 
-        title, url = get_title_and_url(br, title, url, sites['other'])
         s = combine_title_and_url(args, title, url)
         titles_and_urls.append(s)
 

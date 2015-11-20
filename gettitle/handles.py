@@ -2,8 +2,12 @@ import traceback
 
 import requests
 
+
 def handle_error(e, debug, url=None):
     def handle_unexpected_error():
+        if not debug:
+            traceback.print_exc()
+
         print('')
         print('='*20)
         print("Unexpected Error Happened.")
@@ -17,7 +21,6 @@ def handle_error(e, debug, url=None):
         t = 'Check your network connection or the URL "{}" is invalid.'
         print(t.format(url))
 
-
     if debug:
         traceback.print_exc()
 
@@ -26,5 +29,3 @@ def handle_error(e, debug, url=None):
             handle_connection_error(url)
     else:
         handle_unexpected_error()
-
-
