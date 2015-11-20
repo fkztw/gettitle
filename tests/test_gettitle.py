@@ -2,7 +2,7 @@ import unittest
 
 from unittest.mock import Mock
 
-from gettitle import gettitle
+from gettitle import gettitle, exceptions
 
 
 class TestCheckAndReconstructUrl(unittest.TestCase):
@@ -24,12 +24,10 @@ class TestCheckAndReconstructUrl(unittest.TestCase):
         )
 
     def test_empty_url(self):
-        ''' Should return '' for empty url.  '''
+        ''' Should raise EmptyUrlError.  '''
 
-        self.assertEqual(
-            '',
-            gettitle.check_and_reconstruct_url("")
-        )
+        self.assertRaises(exceptions.EmptyUrlError,
+                          gettitle.check_and_reconstruct_url, '')
 
     def test_url_with_leading_space(self):
         ''' Should remove leading space.  '''
