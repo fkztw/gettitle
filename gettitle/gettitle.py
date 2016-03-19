@@ -113,7 +113,7 @@ def visit_with_no_js_browser(br, url, debug):
     except requests.exceptions.ConnectionError as e:
         gettitle.handles.handle_error(e, debug, url=url)
         raise gettitle.exceptions.ConnectionError
-    except:
+    except Exception as e:
         gettitle.handles.handle_error(e, debug)
     else:
         page = br.parsed
