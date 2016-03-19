@@ -109,18 +109,22 @@ def visit_with_no_js_browser(br, url, debug):
     try:
         br.open(url)
     except requests.exceptions.InvalidURL:
-        print("InvalidURL")
+        print("Invalid URL")
     except requests.exceptions.ConnectionError as e:
+        print(e)
         gettitle.handles.handle_error(e, debug, url=url)
         raise gettitle.exceptions.ConnectionError
     except Exception as e:
         gettitle.handles.handle_error(e, debug)
     else:
         page = br.parsed
-        title = html.unescape(page.title.string)
         real_url = br.url
+        try:
+            title = html.unescape(page.title.string)
+        except:
+            raise
 
-    if gettitle.constants.sites['other']['ptt'] in real_url:
+    if gettitle.constants.sites['ptt'] in real_url:
         form = br.get_form(action="/ask/over18")
         if form:
             br.submit_form(form, submit=form['yes'])
@@ -140,18 +144,18 @@ def get_titles_and_urls(br, args):
         except gettitle.exceptions.EmptyUrlError:
             continue
 
-        for site, url in gettitle.constants.sites['javascript'].items():
-            if url in checked_url:
+        try:
+            page, title, url = visit_with_no_js_browser(br['no_js'],
+                                                        checked_url,
+                                                        args.debug)
+        except gettitle.exceptions.ConnectionError:
+            continue
+        except:
+            try:
                 page, title, url = visit_with_js_browser(br['js'],
                                                          checked_url,
                                                          args.debug)
-                break
-        else:
-            try:
-                page, title, url = visit_with_no_js_browser(br['no_js'],
-                                                            checked_url,
-                                                            args.debug)
-            except gettitle.exceptions.ConnectionError:
+            except:
                 continue
 
         if page is None:
