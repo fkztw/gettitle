@@ -63,9 +63,12 @@ def set_browser():
 
 
 def combine_title_and_url(args, title, url):
+    title = title.strip().replace('\n', ' ')
+    url = url.strip()
+
     if args.markdown:
-        title = '[' + title.strip().replace('\n', ' ') + ']'
-        url = '(' + url.strip() + ')'
+        title = '[' + title + ']'
+        url = '(' + url + ')'
         s = '{title}{url}\n'
     else:
         s = '{title}\n{url}\n'
