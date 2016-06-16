@@ -1,3 +1,4 @@
+sudo: required
 language: python
 python:
 - '3.3'
@@ -6,8 +7,11 @@ python:
 - '3.5-dev'
 - 'nightly'
 
+before_install:
+- make travis-dependency
+
 install:
-- pip install .
+- make install
 
 script:
-- python -m unittest
+- make test
