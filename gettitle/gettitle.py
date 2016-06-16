@@ -184,8 +184,7 @@ def copy_to_xclipboard_for_linux_users(titles_and_urls):
     # [:-1] to prevent the last '\n' to be copied.
     text = '\n'.join(titles_and_urls)[:-1]
 
-    # [2:-1] to make `b'a'` become `a` (remove b'')
-    escape_text_for_shell = str(text.encode('unicode-escape'))[2:-1]
+    escape_text_for_shell = text.replace(r'"', r'\"')
 
     if platform.system() == 'Linux' and spawn.find_executable('xclip'):
         os.system(
