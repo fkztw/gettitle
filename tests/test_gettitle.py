@@ -184,7 +184,7 @@ class TestGetTitlesAndUrls(unittest.TestCase):
         title, url = s.split('\n')
 
         self.assertEqual(
-            "駕照 附贈閃光一枚 - Dcard",
+            "駕照 附贈閃光一枚",
             title
         )
         self.assertEqual(
