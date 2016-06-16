@@ -57,6 +57,7 @@ def set_browser():
         'Connection': 'keep-alive'
     }
 
+    dryscrape.start_xvfb()
     js_br = dryscrape.Session()
 
     return {'no_js': no_js_br, 'js': js_br}
