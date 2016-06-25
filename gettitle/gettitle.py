@@ -166,7 +166,7 @@ def get_title_and_url(br, url, debug=False):
         except:
             raise
 
-    return title, url
+    return title.strip(), url.strip()
 
 
 def get_titles_and_urls(br, args):
