@@ -91,7 +91,7 @@ def check_and_reconstruct_url(url):
     return urllib.parse.urlunparse(url_components)
 
 
-def visit_with_js_browser(js_br, url, debug):
+def visit_with_js_browser(js_br, url, debug=False):
     page, title, real_url = None, None, None
 
     try:
@@ -103,10 +103,16 @@ def visit_with_js_browser(js_br, url, debug):
         title = html.unescape(page.title.string)
         real_url = js_br.url()
 
-    return page, title, real_url
+        if debug:
+            print(page.prettify())
+
+    if page is None:
+        raise RuntimeError('page is None')
+
+    return title, real_url
 
 
-def visit_with_no_js_browser(br, url, debug):
+def visit_with_no_js_browser(br, url, debug=False):
     page, title, real_url = None, None, None
 
     try:
@@ -135,7 +141,32 @@ def visit_with_no_js_browser(br, url, debug):
             real_url = br.url
             title = html.unescape(page.title.string)
 
-    return page, title, real_url
+    if page is None:
+        raise RuntimeError('page is None')
+
+    if debug:
+        print(page.prettify())
+
+    return title, real_url
+
+
+def get_title_and_url(br, url, debug=False):
+    try:
+        checked_url = check_and_reconstruct_url(url)
+    except gettitle.exceptions.EmptyUrlError:
+        raise
+
+    try:
+        title, url = visit_with_no_js_browser(br['no_js'], checked_url, debug)
+    except gettitle.exceptions.ConnectionError:
+        raise
+    except:
+        try:
+            title, url = visit_with_js_browser(br['js'], checked_url, debug)
+        except:
+            raise
+
+    return title, url
 
 
 def get_titles_and_urls(br, args):
@@ -143,32 +174,14 @@ def get_titles_and_urls(br, args):
 
     for url_from_user in args.urls:
         try:
-            checked_url = check_and_reconstruct_url(url_from_user)
-        except gettitle.exceptions.EmptyUrlError:
-            continue
-
-        try:
-            page, title, url = visit_with_no_js_browser(br['no_js'],
-                                                        checked_url,
-                                                        args.debug)
-        except gettitle.exceptions.ConnectionError:
-            continue
+            title, url = get_title_and_url(br, url_from_user, args.debug)
         except:
-            try:
-                page, title, url = visit_with_js_browser(br['js'],
-                                                         checked_url,
-                                                         args.debug)
-            except:
-                continue
-
-        if page is None:
             continue
-
-        s = combine_title_and_url(args, title, url)
-        titles_and_urls.append(s)
+        else:
+            s = combine_title_and_url(args, title, url)
+            titles_and_urls.append(s)
 
         if args.debug:
-            print(page.prettify())
             print(title, type(title))
 
     return titles_and_urls
