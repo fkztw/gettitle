@@ -67,7 +67,7 @@ def combine_title_and_url(args, title, url):
     url = url.strip()
 
     if args.markdown:
-        title = '[' + title + ']'
+        title = '[' + title.replace('[', r'\[').replace(']', r'\]') + ']'
         url = '(' + url + ')'
         s = '{title}{url}\n'
     else:
