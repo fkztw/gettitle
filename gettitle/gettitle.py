@@ -42,7 +42,9 @@ def get_args():
 
 
 def set_browser():
-    no_js_br = robobrowser.RoboBrowser(parser='lxml')
+    session = requests.Session()
+    session.verify = False
+    no_js_br = robobrowser.RoboBrowser(parser='lxml', session=session)
     no_js_br.session.headers = {
         'User-agent': ('Mozilla/5.0 '
                        '(Macintosh; Intel Mac OS X 10.9; rv:33.0) '
