@@ -2,19 +2,23 @@
 
 from setuptools import find_packages, setup
 
-requires = [
-    'beautifulsoup4',
-    'dryscrape',
-    'requests',
-    'robobrowser',
+dependency_links = [
+    'https://github.com/m157q/robobrowser/tarball/babf6dd#egg=robobrowser-0.5.3'
+]
+install_requires = [
+    'beautifulsoup4==4.4.1',
+    'dryscrape==1.0',
+    'requests==2.10.0',
+    'robobrowser==0.5.3',
 ]
 
 setup(
     packages=find_packages(exclude=['gettitle.bin']),
     scripts=['gettitle/bin/gettitle'],
-    install_requires=requires,
+    dependency_links=dependency_links,
+    install_requires=install_requires,
     name='gettitle',
-    version='0.1.0',
+    version='0.1.1',
     author='Shun-Yi Jheng',
     author_email='M157q.tw@gmail.com',
     url="https://github.com/M157q/gettitle",
