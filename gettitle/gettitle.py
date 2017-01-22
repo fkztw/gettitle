@@ -2,8 +2,8 @@
 
 import argparse
 import html
-import os
 import platform
+import subprocess
 import sys
 import urllib
 from distutils import spawn
@@ -210,11 +210,14 @@ def copy_to_xclipboard_for_linux_users(titles_and_urls):
     escape_text_for_shell = text.replace(r'"', r'\"')
 
     if platform.system() == 'Linux' and spawn.find_executable('xclip'):
-        os.system(
-            'echo -e "{output}" | xclip -selection clipboard'.format(
-                output=escape_text_for_shell,
-            )
-        )
+        xclip_copy_command = (
+            'echo -e "{}" | xclip -selection clipboard &> /dev/null'
+        ).format(escape_text_for_shell)
+
+        try:
+            subprocess.run(xclip_copy_command, shell=True, check=True)
+        except:
+            print("Something wrong with xclip. The content won't be copied.")
 
 
 def main():
