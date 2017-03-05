@@ -203,7 +203,10 @@ def print_titles_and_urls(titles_and_urls):
         print('\n'.join(titles_and_urls))
 
 
-def copy_to_xclipboard_for_linux_users(titles_and_urls, debug=False):
+def copy_result_to_clipboard_for_users(titles_and_urls, debug=False):
+    '''
+    This function currently only support Linxu users with `xclip` installed.
+    '''
     # [:-1] to prevent the last '\n' to be copied.
     text = '\n'.join(titles_and_urls)[:-1]
 
@@ -244,7 +247,7 @@ def main():
     br = set_browser()
     titles_and_urls = get_titles_and_urls(br, args)
     print_titles_and_urls(titles_and_urls)
-    copy_to_xclipboard_for_linux_users(titles_and_urls, args.debug)
+    copy_result_to_clipboard_for_users(titles_and_urls, args.debug)
 
 
 if __name__ == '__main__':
