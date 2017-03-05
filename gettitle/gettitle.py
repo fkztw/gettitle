@@ -203,18 +203,22 @@ def print_titles_and_urls(titles_and_urls):
         print('\n'.join(titles_and_urls))
 
 
-def copy_to_xclipboard_for_linux_users(titles_and_urls):
+def copy_to_xclipboard_for_linux_users(titles_and_urls, debug=False):
     # [:-1] to prevent the last '\n' to be copied.
     text = '\n'.join(titles_and_urls)[:-1]
 
     escape_text_for_shell = text.replace(r'"', r'\"')
 
     user_os = platform.system()
+    if debug:
+        print("user_os: {}".format(user_os))
     if user_os != 'Linux':
         # currently support using xclip on Linux only.
         return
 
     xclip_path = spawn.find_executable('xclip') or ''
+    if debug:
+        print("xclip_path: {}".format(xclip_path))
     if not xclip_path:
         return
 
@@ -224,13 +228,15 @@ def copy_to_xclipboard_for_linux_users(titles_and_urls):
         escape_text_for_shell,
         xclip_path,
     )
+    if debug:
+        print("xclip_copy_command: {}".format(xclip_copy_command))
 
     try:
         subprocess.run(xclip_copy_command, shell=True, check=True)
     except:
         print("Something wrong with xclip. The content won't be copied.")
     else:
-        print(xclip_copy_command)
+        print("Copied result to clipboard via xclip.")
 
 
 def main():
@@ -238,7 +244,7 @@ def main():
     br = set_browser()
     titles_and_urls = get_titles_and_urls(br, args)
     print_titles_and_urls(titles_and_urls)
-    copy_to_xclipboard_for_linux_users(titles_and_urls)
+    copy_to_xclipboard_for_linux_users(titles_and_urls, args.debug)
 
 
 if __name__ == '__main__':
