@@ -18,7 +18,7 @@ setup(
     dependency_links=dependency_links,
     install_requires=install_requires,
     name='gettitle',
-    version='0.1.2',
+    version='0.1.3',
     author='Shun-Yi Jheng',
     author_email='M157q.tw@gmail.com',
     url="https://github.com/M157q/gettitle",
