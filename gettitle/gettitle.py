@@ -235,11 +235,13 @@ def copy_result_to_clipboard_for_users(titles_and_urls, debug=False):
         print("xclip_copy_command: {}".format(xclip_copy_command))
 
     try:
-        subprocess.run(xclip_copy_command, shell=True, check=True)
+        completed_process = subprocess.run(xclip_copy_command, shell=True, check=True)
     except:
         print("Something wrong with xclip. The content won't be copied.")
     else:
         print("Copied result to clipboard via xclip.")
+        if debug:
+            print(completed_process)
 
 
 def main():
