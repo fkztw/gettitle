@@ -2,13 +2,11 @@
 
 import argparse
 import html
-import platform
-import subprocess
 import sys
 import urllib
-from distutils import spawn
 
 import dryscrape
+import pyperclip
 import requests
 import robobrowser
 from bs4 import BeautifulSoup as bs
@@ -209,39 +207,12 @@ def copy_result_to_clipboard_for_users(titles_and_urls, debug=False):
     '''
     # [:-1] to prevent the last '\n' to be copied.
     text = '\n'.join(titles_and_urls)[:-1]
-
-    escape_text_for_shell = text.replace(r'"', r'\"')
-
-    user_os = platform.system()
-    if debug:
-        print("user_os: {}".format(user_os))
-    if user_os != 'Linux':
-        # currently support using xclip on Linux only.
-        return
-
-    xclip_path = spawn.find_executable('xclip') or ''
-    if debug:
-        print("xclip_path: {}".format(xclip_path))
-    if not xclip_path:
-        return
-
-    xclip_copy_command = (
-        'echo -e "{}" | {} -selection clipboard &> /dev/null'
-    ).format(
-        escape_text_for_shell,
-        xclip_path,
-    )
-    if debug:
-        print("xclip_copy_command: {}".format(xclip_copy_command))
-
     try:
-        completed_process = subprocess.run(xclip_copy_command, shell=True, check=True)
+        pyperclip.copy(text)
     except:
-        print("Something wrong with xclip. The content won't be copied.")
+        raise
     else:
-        print("Copied result to clipboard via xclip.")
-        if debug:
-            print(completed_process)
+        print("Copied result to clipboard.")
 
 
 def main():
