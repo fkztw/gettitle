@@ -1,19 +1,27 @@
 #!/usr/bin/env python3
 
 import argparse
-import html
 import sys
 import urllib
 
-import dryscrape
 import pyperclip
-import requests
-import robobrowser
-from bs4 import BeautifulSoup as bs
+from selenium import webdriver
 
-import gettitle.constants
+import gettitle.special_sites
 import gettitle.exceptions
 import gettitle.handles
+
+
+def set_browser():
+    options = webdriver.ChromeOptions()
+    options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:33.0) Gecko/20100101 Firefox/33.0')")
+    options.add_argument("--headless")
+    browser = webdriver.Chrome(options=options)
+    return browser
+
+
+def unset_browser(browser):
+    browser.quit()
 
 
 def get_args():
@@ -37,37 +45,6 @@ def get_args():
     )
 
     return p.parse_args()
-
-
-def set_browser():
-    session = requests.Session()
-    session.verify = False
-    no_js_br = robobrowser.RoboBrowser(parser='lxml', session=session)
-    no_js_br.session.headers = {
-        'User-agent': ('Mozilla/5.0 '
-                       '(Macintosh; Intel Mac OS X 10.9; rv:33.0) '
-                       'Gecko/20100101 Firefox/33.0'),
-        'Accept': ('text/html,'
-                   'application/xhtml+xml,'
-                   'application/xml;'
-                   'q=0.9,*/*;q=0.8'),
-        'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
-        'Accept-Encoding': 'none',
-        'Accept-Language': 'en-US,en;q=0.8',
-        'Connection': 'keep-alive'
-    }
-
-    try:
-        dryscrape.start_xvfb()
-    except:
-        pass
-
-    try:
-        js_br = dryscrape.Session()
-    except:
-        js_br = None
-
-    return {'no_js': no_js_br, 'js': js_br}
 
 
 def combine_title_and_url(args, title, url):
@@ -99,91 +76,48 @@ def check_and_reconstruct_url(url):
     return urllib.parse.urlunparse(url_components)
 
 
-def visit_with_js_browser(js_br, url, debug=False):
-    page, title, real_url = None, None, None
+def visit_with_browser(browser, checked_url, debug=False):
+    title, real_url = None, None
 
     try:
-        js_br.visit(url)
-    except:
-        gettitle.handles.handle_error(sys.exc_info()[0], debug)
-    else:
-        page = bs(js_br.body(), 'lxml')
-        title = html.unescape(page.title.string)
-        real_url = js_br.url()
-
-        if debug:
-            print(page.prettify())
-
-    if page is None:
-        raise RuntimeError('page is None')
-
-    return title, real_url
-
-
-def visit_with_no_js_browser(br, url, debug=False):
-    page, title, real_url = None, None, None
-
-    try:
-        br.open(url)
-    except requests.exceptions.InvalidURL:
-        print("Invalid URL")
-    except requests.exceptions.ConnectionError as e:
-        print(e)
-        gettitle.handles.handle_error(e, debug, url=url)
-        raise gettitle.exceptions.ConnectionError
+        browser.get(checked_url)
     except Exception as e:
         gettitle.handles.handle_error(e, debug)
     else:
-        page = br.parsed
-        real_url = br.url
-        try:
-            title = html.unescape(page.title.string)
-        except:
-            raise
+        if debug:
+            print(browser.page_source)
+        title = browser.title
+        real_url = browser.current_url
 
-    if gettitle.constants.sites['ptt'] in real_url:
-        form = br.get_form(action="/ask/over18")
-        if form:
-            br.submit_form(form, submit=form['yes'])
-            page = br.parsed
-            real_url = br.url
-            title = html.unescape(page.title.string)
-
-    if page is None:
-        raise RuntimeError('page is None')
-
-    if debug:
-        print(page.prettify())
+    for url, handler in gettitle.special_sites.URL_AND_HANDLER_MAPPING.items():
+        if url in real_url:
+            title, real_url = handler(browser)
+            break
 
     return title, real_url
 
 
-def get_title_and_url(br, url, debug=False):
+def get_title_and_url(browser, url, debug=False):
     try:
         checked_url = check_and_reconstruct_url(url)
     except gettitle.exceptions.EmptyUrlError:
         raise
 
     try:
-        title, url = visit_with_no_js_browser(br['no_js'], checked_url, debug)
-    except gettitle.exceptions.ConnectionError:
-        raise
-    except:
-        try:
-            title, url = visit_with_js_browser(br['js'], checked_url, debug)
-        except:
-            raise
+        title, url = visit_with_browser(browser, checked_url, debug)
+    except Exception as e:
+        gettitle.handles.handle_error(e)
 
     return title.strip(), url.strip()
 
 
-def get_titles_and_urls(br, args):
+def get_titles_and_urls(browser, args):
     titles_and_urls = []
 
     for url_from_user in args.urls:
         try:
-            title, url = get_title_and_url(br, url_from_user, args.debug)
-        except:
+            title, url = get_title_and_url(browser, url_from_user, args.debug)
+        except Exception:
             continue
         else:
             s = combine_title_and_url(args, title, url)
@@ -209,16 +143,24 @@ def copy_result_to_clipboard_for_users(titles_and_urls, debug=False):
     text = '\n'.join(titles_and_urls)[:-1]
     try:
         pyperclip.copy(text)
-    except:
-        raise
+    except Exception as e:
+        gettitle.handles.handle_error(e, debug)
     else:
-        print("Copied result to clipboard.")
+        print("Copied to clipboard.")
 
 
 def main():
     args = get_args()
-    br = set_browser()
-    titles_and_urls = get_titles_and_urls(br, args)
+
+    try:
+        browser = set_browser()
+    except Exception as e:
+        gettitle.handles.handle_error(e)
+    else:
+        titles_and_urls = get_titles_and_urls(browser, args)
+    finally:
+        unset_browser(browser)
+
     print_titles_and_urls(titles_and_urls)
     copy_result_to_clipboard_for_users(titles_and_urls, args.debug)
 

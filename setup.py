@@ -1,28 +1,24 @@
 #!/usr/bin/env python3
 
+import os
+
+from pip.req import parse_requirements
 from setuptools import find_packages, setup
 
-dependency_links = [
-    (
-        'https://github.com/m157q/robobrowser/'
-        'tarball/babf6dd#egg=robobrowser-0.5.3'
-    ),
-]
-install_requires = [
-    'beautifulsoup4==4.4.1',
-    'dryscrape==1.0',
-    'pyperclip==1.6.0',
-    'requests==2.10.0',
-    'robobrowser==0.5.3',
-]
+
+ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
+
+install_requirements = parse_requirements(
+    os.path.join(ROOT_DIR, 'requirements.txt'), session=False
+)
+install_requires = [str(ir.req) for ir in install_requirements]
 
 setup(
     packages=find_packages(exclude=['gettitle.bin']),
     scripts=['gettitle/bin/gettitle'],
-    dependency_links=dependency_links,
     install_requires=install_requires,
     name='gettitle',
-    version='0.1.3',
+    version='0.2.0',
     author='Shun-Yi Jheng',
     author_email='M157q.tw@gmail.com',
     url="https://github.com/M157q/gettitle",
