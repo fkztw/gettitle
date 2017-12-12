@@ -7,7 +7,7 @@ import urllib
 import pyperclip
 from selenium import webdriver
 
-import gettitle.constants
+import gettitle.special_sites
 import gettitle.exceptions
 import gettitle.handles
 
@@ -75,8 +75,10 @@ def visit_with_browser(browser, checked_url, debug=False):
         title = browser.title
         real_url = browser.current_url
 
-    if debug:
-        print(page.prettify())
+    for url, handler in gettitle.special_sites.URL_AND_HANDLER_MAPPING.items():
+        if url in real_url:
+            title, real_url = handler(browser)
+            break
 
     return title, real_url
 
