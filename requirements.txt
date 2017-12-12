@@ -1,6 +1,2 @@
-beautifulsoup4==4.4.1
-dryscrape==1.0
 pyperclip==1.6.0
-requests==2.10.0
-
-git+https://github.com/M157q/robobrowser.git@babf6dd
+selenium==3.8.0
