@@ -11,7 +11,7 @@ dependency_links = [
 install_requires = [
     'beautifulsoup4==4.4.1',
     'dryscrape==1.0',
-    'pyperclip==1.5.27',
+    'pyperclip==1.6.0',
     'requests==2.10.0',
     'robobrowser==0.5.3',
 ]
