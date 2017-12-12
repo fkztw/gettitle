@@ -8,13 +8,6 @@ from setuptools import find_packages, setup
 
 ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
 
-dependency_links = [
-    (
-        'https://github.com/m157q/robobrowser/'
-        'tarball/babf6dd#egg=robobrowser-0.5.3'
-    ),
-]
-
 install_requirements = parse_requirements(
     os.path.join(ROOT_DIR, 'requirements.txt'), session=False
 )
@@ -23,7 +16,6 @@ install_requires = [str(ir.req) for ir in install_requirements]
 setup(
     packages=find_packages(exclude=['gettitle.bin']),
     scripts=['gettitle/bin/gettitle'],
-    dependency_links=dependency_links,
     install_requires=install_requires,
     name='gettitle',
     version='0.1.3',
