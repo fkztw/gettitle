@@ -1,6 +1,5 @@
 import traceback
 
-import requests
 
 
 def handle_error(e, debug, url=None):
@@ -23,9 +22,5 @@ def handle_error(e, debug, url=None):
 
     if debug:
         traceback.print_exc()
-
-    if isinstance(e, requests.exceptions.ConnectionError):
-        if url:
-            handle_connection_error(url)
     else:
         handle_unexpected_error()
