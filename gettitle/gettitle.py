@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 
 import argparse
-import html
 import sys
 import urllib
 
-import dryscrape
 import pyperclip
-import requests
-import robobrowser
-from bs4 import BeautifulSoup as bs
+from selenium import webdriver
 
 import gettitle.constants
 import gettitle.exceptions
