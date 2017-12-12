@@ -146,7 +146,7 @@ def copy_result_to_clipboard_for_users(titles_and_urls, debug=False):
     except Exception as e:
         gettitle.handles.handle_error(e, debug)
     else:
-        print("Copied result to clipboard.")
+        print("Copied to clipboard.")
 
 
 def main():
