@@ -129,8 +129,8 @@ def copy_result_to_clipboard_for_users(titles_and_urls, debug=False):
     text = '\n'.join(titles_and_urls)[:-1]
     try:
         pyperclip.copy(text)
-    except:
-        raise
+    except Exception as e:
+        gettitle.handles.handle_error(e, debug)
     else:
         print("Copied result to clipboard.")
 
