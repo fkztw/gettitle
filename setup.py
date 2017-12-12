@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 
+import os
+
+from pip.req import parse_requirements
 from setuptools import find_packages, setup
+
+
+ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 dependency_links = [
     (
@@ -8,13 +14,11 @@ dependency_links = [
         'tarball/babf6dd#egg=robobrowser-0.5.3'
     ),
 ]
-install_requires = [
-    'beautifulsoup4==4.4.1',
-    'dryscrape==1.0',
-    'pyperclip==1.6.0',
-    'requests==2.10.0',
-    'robobrowser==0.5.3',
-]
+
+install_requirements = parse_requirements(
+    os.path.join(ROOT_DIR, 'requirements.txt'), session=False
+)
+install_requires = [str(ir.req) for ir in install_requirements]
 
 setup(
     packages=find_packages(exclude=['gettitle.bin']),
