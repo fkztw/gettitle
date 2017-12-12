@@ -123,32 +123,27 @@ def visit_with_no_js_browser(br, url, debug=False):
     return title, real_url
 
 
-def get_title_and_url(br, url, debug=False):
+def get_title_and_url(browser, url, debug=False):
     try:
         checked_url = check_and_reconstruct_url(url)
     except gettitle.exceptions.EmptyUrlError:
         raise
 
     try:
-        title, url = visit_with_no_js_browser(br['no_js'], checked_url, debug)
-    except gettitle.exceptions.ConnectionError:
-        raise
-    except:
-        try:
-            title, url = visit_with_js_browser(br['js'], checked_url, debug)
-        except:
-            raise
+        title, url = visit_with_browser(browser, checked_url, debug)
+    except Exception as e:
+        gettitle.handles.handle_error(e)
 
     return title.strip(), url.strip()
 
 
-def get_titles_and_urls(br, args):
+def get_titles_and_urls(browser, args):
     titles_and_urls = []
 
     for url_from_user in args.urls:
         try:
-            title, url = get_title_and_url(br, url_from_user, args.debug)
-        except:
+            title, url = get_title_and_url(browser, url_from_user, args.debug)
+        except Exception:
             continue
         else:
             s = combine_title_and_url(args, title, url)
