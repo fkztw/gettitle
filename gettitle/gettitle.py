@@ -15,7 +15,8 @@ import gettitle.handles
 def set_browser():
     options = webdriver.ChromeOptions()
     options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:33.0) Gecko/20100101 Firefox/33.0')")
-    browser = webdriver.Chrome(chrome_options=options)
+    options.add_argument("--headless")
+    browser = webdriver.Chrome(options=options)
     return browser
 
 
