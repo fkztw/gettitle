@@ -3,7 +3,10 @@
 from setuptools import find_packages, setup
 
 dependency_links = [
-    'https://github.com/m157q/robobrowser/tarball/babf6dd#egg=robobrowser-0.5.3'
+    (
+        'https://github.com/m157q/robobrowser/'
+        'tarball/babf6dd#egg=robobrowser-0.5.3'
+    ),
 ]
 install_requires = [
     'beautifulsoup4==4.4.1',
