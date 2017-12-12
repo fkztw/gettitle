@@ -8,7 +8,7 @@ Currently support auto copy to clipboard via `xclip`.
   
 ## Requirements  
   
-+ PhantomJS  
++ [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads)  
   
 ---  
   
