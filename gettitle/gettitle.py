@@ -64,58 +64,16 @@ def check_and_reconstruct_url(url):
     return urllib.parse.urlunparse(url_components)
 
 
-def visit_with_js_browser(js_br, url, debug=False):
-    page, title, real_url = None, None, None
+def visit_with_browser(browser, checked_url, debug=False):
+    title, real_url = None, None
 
     try:
-        js_br.visit(url)
-    except:
-        gettitle.handles.handle_error(sys.exc_info()[0], debug)
-    else:
-        page = bs(js_br.body(), 'lxml')
-        title = html.unescape(page.title.string)
-        real_url = js_br.url()
-
-        if debug:
-            print(page.prettify())
-
-    if page is None:
-        raise RuntimeError('page is None')
-
-    return title, real_url
-
-
-def visit_with_no_js_browser(br, url, debug=False):
-    page, title, real_url = None, None, None
-
-    try:
-        br.open(url)
-    except requests.exceptions.InvalidURL:
-        print("Invalid URL")
-    except requests.exceptions.ConnectionError as e:
-        print(e)
-        gettitle.handles.handle_error(e, debug, url=url)
-        raise gettitle.exceptions.ConnectionError
+        browser.get(checked_url)
     except Exception as e:
         gettitle.handles.handle_error(e, debug)
     else:
-        page = br.parsed
-        real_url = br.url
-        try:
-            title = html.unescape(page.title.string)
-        except:
-            raise
-
-    if gettitle.constants.sites['ptt'] in real_url:
-        form = br.get_form(action="/ask/over18")
-        if form:
-            br.submit_form(form, submit=form['yes'])
-            page = br.parsed
-            real_url = br.url
-            title = html.unescape(page.title.string)
-
-    if page is None:
-        raise RuntimeError('page is None')
+        title = browser.title
+        real_url = browser.current_url
 
     if debug:
         print(page.prettify())
