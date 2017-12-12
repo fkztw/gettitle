@@ -10,16 +10,18 @@ Currently support auto copy to clipboard via `xclip`.
   
 + PhantomJS  
   
+---  
   
 ## Installation  
   
 `$ pip install git+https://github.com/M157q/gettitle`  
   
+---  
   
 ## Usage  
   
 ```  
-usage: gettitle.py [-h] [-m] [-d] url [url ...]  
+usage: gettitle [-h] [-m] [-d] url [url ...]  
   
 positional arguments:  
   url             url(s) of the webpage  
@@ -30,6 +32,24 @@ optional arguments:
   -d, --debug     print out webpage source code and title for debugging  
 ```  
   
+---  
+  
+## Examples  
+  
+```  
+$ gettitle "https://blog.m157q.tw"  
+  
+Home | Just for noting  
+https://blog.m157q.tw/  
+```  
+  
+```  
+$ gettitle -m "https://blog.m157q.tw"  
+  
+[Home | Just for noting](https://blog.m157q.tw/)  
+```  
+  
+---  
   
 ## Testing  
   
