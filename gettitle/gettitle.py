@@ -35,37 +35,6 @@ def get_args():
     return p.parse_args()
 
 
-def set_browser():
-    session = requests.Session()
-    session.verify = False
-    no_js_br = robobrowser.RoboBrowser(parser='lxml', session=session)
-    no_js_br.session.headers = {
-        'User-agent': ('Mozilla/5.0 '
-                       '(Macintosh; Intel Mac OS X 10.9; rv:33.0) '
-                       'Gecko/20100101 Firefox/33.0'),
-        'Accept': ('text/html,'
-                   'application/xhtml+xml,'
-                   'application/xml;'
-                   'q=0.9,*/*;q=0.8'),
-        'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
-        'Accept-Encoding': 'none',
-        'Accept-Language': 'en-US,en;q=0.8',
-        'Connection': 'keep-alive'
-    }
-
-    try:
-        dryscrape.start_xvfb()
-    except:
-        pass
-
-    try:
-        js_br = dryscrape.Session()
-    except:
-        js_br = None
-
-    return {'no_js': no_js_br, 'js': js_br}
-
-
 def combine_title_and_url(args, title, url):
     title = title.strip().replace('\n', ' ')
     url = url.strip()
@@ -213,8 +182,16 @@ def copy_result_to_clipboard_for_users(titles_and_urls, debug=False):
 
 def main():
     args = get_args()
-    br = set_browser()
-    titles_and_urls = get_titles_and_urls(br, args)
+
+    try:
+        browser = webdriver.PhantomJS()
+    except Exception as e:
+        gettitle.handles.handle_error(e)
+    else:
+        titles_and_urls = get_titles_and_urls(browser, args)
+    finally:
+        browser.quit()
+
     print_titles_and_urls(titles_and_urls)
     copy_result_to_clipboard_for_users(titles_and_urls, args.debug)
 
