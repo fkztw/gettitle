@@ -7,12 +7,12 @@ def handle_error(e, debug=False, url=None):
             traceback.print_exc()
 
         print('')
-        print('='*20)
+        print('=' * 20)
         print("Unexpected Error Happened.")
         bug_report_url = "https://github.com/M157q/gettitle/issues"
         t = "Please report the error message above to {}"
         print(t.format(bug_report_url))
-        print('='*20)
+        print('=' * 20)
         exit()
 
     def handle_connection_error(url):
