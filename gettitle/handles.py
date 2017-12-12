@@ -1,8 +1,7 @@
 import traceback
 
 
-
-def handle_error(e, debug, url=None):
+def handle_error(e, debug=False, url=None):
     def handle_unexpected_error():
         if not debug:
             traceback.print_exc()
