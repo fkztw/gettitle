@@ -12,6 +12,17 @@ import gettitle.exceptions
 import gettitle.handles
 
 
+def set_browser():
+    options = webdriver.ChromeOptions()
+    options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:33.0) Gecko/20100101 Firefox/33.0')")
+    browser = webdriver.Chrome(chrome_options=options)
+    return browser
+
+
+def unset_browser(browser):
+    browser.quit()
+
+
 def get_args():
     p = argparse.ArgumentParser()
     p.add_argument(
@@ -72,6 +83,8 @@ def visit_with_browser(browser, checked_url, debug=False):
     except Exception as e:
         gettitle.handles.handle_error(e, debug)
     else:
+        if debug:
+            print(browser.page_source)
         title = browser.title
         real_url = browser.current_url
 
@@ -139,13 +152,13 @@ def main():
     args = get_args()
 
     try:
-        browser = webdriver.PhantomJS()
+        browser = set_browser()
     except Exception as e:
         gettitle.handles.handle_error(e)
     else:
         titles_and_urls = get_titles_and_urls(browser, args)
     finally:
-        browser.quit()
+        unset_browser(browser)
 
     print_titles_and_urls(titles_and_urls)
     copy_result_to_clipboard_for_users(titles_and_urls, args.debug)

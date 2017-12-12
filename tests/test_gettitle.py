@@ -89,12 +89,12 @@ class TestCheckAndReconstructUrl(unittest.TestCase):
 class TestGetTitlesAndUrls(unittest.TestCase):
 
     def setUp(self):
-        self.br = gettitle.set_browser()
         self.args = Mock(urls=None, markdown=False, debug=False)
+        self.br = gettitle.set_browser()
 
     def tearDown(self):
-        del self.br
         del self.args
+        gettitle.unset_browser(self.br)
 
     def test_google(self):
         self.args.urls = ["http://google.com"]
