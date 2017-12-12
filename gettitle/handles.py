@@ -13,7 +13,6 @@ def handle_error(e, debug=False, url=None):
         t = "Please report the error message above to {}"
         print(t.format(bug_report_url))
         print('=' * 20)
-        exit()
 
     def handle_connection_error(url):
         t = 'Check your network connection or the URL "{}" is invalid.'
@@ -23,3 +22,5 @@ def handle_error(e, debug=False, url=None):
         traceback.print_exc()
     else:
         handle_unexpected_error()
+
+    exit()
