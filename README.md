@@ -1,6 +1,6 @@
 # Gettitle  
   
-A Python 3 script depends on PhantomJS to grab the title of webpage (even the webpages use JavaScript).  
+A Python 3 script depends on ChromeDriver (controled by Selenium) to grab the title of webpage (even the webpages use JavaScript).  
 Can print out in normal or markdown format.  
 Currently support auto copy to clipboard via `xclip`.  
   
