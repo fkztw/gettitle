@@ -1,6 +1,3 @@
 *.egg-info
 __pycache__
 *.sw*
-
-# Log for using Selenium with PhantomJS
-ghostdriver.log
