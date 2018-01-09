@@ -140,8 +140,9 @@ def get_titles_and_urls(browser, args):
 
 def print_titles_and_urls(titles_and_urls):
     if titles_and_urls:
-        print('')
+        print('=' * 80)
         print('\n'.join(titles_and_urls))
+        print('=' * 80)
 
 
 def copy_result_to_clipboard_for_users(titles_and_urls, debug=False):
