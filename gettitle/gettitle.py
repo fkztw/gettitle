@@ -34,14 +34,10 @@ def get_args():
         help="url(s) of the webpage",
     )
     p.add_argument(
-        '-m', '--markdown',
-        action='store_true',
-        help="output with markdown format",
-    )
-    p.add_argument(
-        '-r', '--rst',
-        action='store_true',
-        help="output with reStructuredText format",
+        '-s', '--syntax',
+        choices=['md', 'rst'],
+        default=None,
+        help="choose output syntax. 'md' for Markdown, 'rst' for reStructuredText.",
     )
     p.add_argument(
         '-d', '--debug',
@@ -56,10 +52,10 @@ def combine_title_and_url(args, title, url):
     title = title.strip()
     url = url.strip()
 
-    if args.markdown:
+    if args.syntax == "md":
         title = title.replace('[', r'\[').replace(']', r'\]')
         s = "[{title}]({url})"
-    elif args.rst:
+    elif args.syntax == "rst":
         s = "`{title} <{url}>`_"
     else:
         s = "{title}\n{url}"

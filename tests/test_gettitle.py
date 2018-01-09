@@ -89,7 +89,7 @@ class TestCheckAndReconstructUrl(unittest.TestCase):
 class TestGetTitlesAndUrls(unittest.TestCase):
 
     def setUp(self):
-        self.args = Mock(urls=None, markdown=False, rst=False, debug=False)
+        self.args = Mock(urls=None, syntax=None, debug=False)
         self.br = gettitle.set_browser()
 
     def tearDown(self):
@@ -186,3 +186,39 @@ class TestGetTitlesAndUrls(unittest.TestCase):
             "駕照 附贈閃光一枚 - Dcard" + "\n" + "https://www.dcard.tw/f/bg/p/706907",
             s
         )
+
+
+class TestMD(unittest.TestCase):
+    ''' Test for `-s md` option, output should be in Markdown syntax. '''
+
+    def setUp(self):
+        self.args = Mock(urls=None, syntax="md", debug=False)
+        self.br = gettitle.set_browser()
+
+    def test_google(self):
+        self.args.urls = ["http://google.com"]
+        title_and_url = gettitle.get_titles_and_urls(self.br, self.args)[0].strip()
+
+        self.assertRegex(title_and_url, "\[.*\]\(.*\)")
+
+    def tearDown(self):
+        del self.args
+        gettitle.unset_browser(self.br)
+
+
+class TestRST(unittest.TestCase):
+    ''' Test for `-s rst` option, output should be in reStructuredText syntax. '''
+
+    def setUp(self):
+        self.args = Mock(urls=None, syntax="rst", debug=False)
+        self.br = gettitle.set_browser()
+
+    def test_google(self):
+        self.args.urls = ["http://google.com"]
+        title_and_url = gettitle.get_titles_and_urls(self.br, self.args)[0].strip()
+
+        self.assertRegex(title_and_url, "`.* <.*>`_")
+
+    def tearDown(self):
+        del self.args
+        gettitle.unset_browser(self.br)
