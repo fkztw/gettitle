@@ -98,8 +98,8 @@ class TestGetTitlesAndUrls(unittest.TestCase):
 
     def test_google(self):
         self.args.urls = ["http://google.com"]
-        s = gettitle.get_titles_and_urls(self.br, self.args)[0][:-1]
-        title, url = s.split('\n')
+        s = gettitle.get_titles_and_urls(self.br, self.args)[0]
+        title, url = s.strip().split('\n')
 
         self.assertEqual("Google", title)
         self.assertTrue("https://www.google.com" in url)
@@ -108,8 +108,8 @@ class TestGetTitlesAndUrls(unittest.TestCase):
         self.args.urls = [
             "https://www.ptt.cc/bbs/joke/M.1442444784.A.1C4.html"
         ]
-        s = gettitle.get_titles_and_urls(self.br, self.args)[0][:-1]
-        title, url = s.split('\n')
+        s = gettitle.get_titles_and_urls(self.br, self.args)[0]
+        title, url = s.strip().split('\n')
 
         self.assertEqual(
             "[豪洨] 成語新解--弘庭戴套 - 看板 joke - 批踢踢實業坊",
@@ -126,8 +126,8 @@ class TestGetTitlesAndUrls(unittest.TestCase):
         self.args.urls = [
             "https://www.ptt.cc/bbs/Gossiping/M.1441715120.A.72E.html"
         ]
-        s = gettitle.get_titles_and_urls(self.br, self.args)[0][:-1]
-        title, url = s.split('\n')
+        s = gettitle.get_titles_and_urls(self.br, self.args)[0]
+        title, url = s.strip().split('\n')
 
         self.assertEqual(
             "Re: [爆卦] 9/19 台灣失智症協會 一日志工 - 看板 Gossiping - 批踢踢實業坊",
@@ -144,8 +144,8 @@ class TestGetTitlesAndUrls(unittest.TestCase):
         self.args.urls = [
             "https://hackpad.com/iToolMan-T-cOJlcwLntzx"
         ]
-        s = gettitle.get_titles_and_urls(self.br, self.args)[0][:-1]
-        title, url = s.split('\n')
+        s = gettitle.get_titles_and_urls(self.br, self.args)[0]
+        title, url = s.strip().split('\n')
 
         self.assertEqual(
             "iToolMan 工具人帽T討論 - hackpad.com",
@@ -162,8 +162,8 @@ class TestGetTitlesAndUrls(unittest.TestCase):
         self.args.urls = [
             "http://www.ruten.com.tw/"
         ]
-        s = gettitle.get_titles_and_urls(self.br, self.args)[0][:-1]
-        title, url = s.split('\n')
+        s = gettitle.get_titles_and_urls(self.br, self.args)[0]
+        title, url = s.strip().split('\n')
 
         self.assertEqual(
             "露天拍賣-台灣 NO.1 拍賣網站",
@@ -181,13 +181,8 @@ class TestGetTitlesAndUrls(unittest.TestCase):
             "https://www.dcard.tw/f/bg/p/706907"
         ]
         s = gettitle.get_titles_and_urls(self.br, self.args)[0][:-1]
-        title, url = s.split('\n')
 
         self.assertEqual(
-            "駕照 附贈閃光一枚 - Dcard",
-            title
-        )
-        self.assertEqual(
-            "https://www.dcard.tw/f/bg/p/706907",
-            url
+            "駕照 附贈閃光一枚 - Dcard" + "\n" + "https://www.dcard.tw/f/bg/p/706907",
+            s
         )

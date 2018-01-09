@@ -53,17 +53,16 @@ def get_args():
 
 
 def combine_title_and_url(args, title, url):
-    title = title.strip().replace('\n', ' ')
+    title = title.strip()
     url = url.strip()
 
     if args.markdown:
-        title = '[' + title.replace('[', r'\[').replace(']', r'\]') + ']'
-        url = '(' + url + ')'
-        s = '{title}{url}\n'
+        title = title.replace('[', r'\[').replace(']', r'\]')
+        s = "[{title}]({url})"
     elif args.rst:
-        s = "`{title} <{url}>`_\n"
+        s = "`{title} <{url}>`_"
     else:
-        s = '{title}\n{url}\n'
+        s = "{title}\n{url}"
 
     return s.format(title=title, url=url)
 
@@ -128,7 +127,7 @@ def get_titles_and_urls(browser, args):
             continue
         else:
             s = combine_title_and_url(args, title, url)
-            titles_and_urls.append(s)
+            titles_and_urls.append(s + '\n')
 
         if args.debug:
             print(title, type(title))
