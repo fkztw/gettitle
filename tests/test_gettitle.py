@@ -89,7 +89,7 @@ class TestCheckAndReconstructUrl(unittest.TestCase):
 class TestGetTitlesAndUrls(unittest.TestCase):
 
     def setUp(self):
-        self.args = Mock(urls=None, markdown=False, debug=False)
+        self.args = Mock(urls=None, markdown=False, rst=False, debug=False)
         self.br = gettitle.set_browser()
 
     def tearDown(self):

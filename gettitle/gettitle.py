@@ -39,6 +39,11 @@ def get_args():
         help="output with markdown format",
     )
     p.add_argument(
+        '-r', '--rst',
+        action='store_true',
+        help="output with reStructuredText format",
+    )
+    p.add_argument(
         '-d', '--debug',
         action='store_true',
         help="print out webpage source code and title for debugging",
@@ -55,6 +60,8 @@ def combine_title_and_url(args, title, url):
         title = '[' + title.replace('[', r'\[').replace(']', r'\]') + ']'
         url = '(' + url + ')'
         s = '{title}{url}\n'
+    elif args.rst:
+        s = "`{title} <{url}>`_\n"
     else:
         s = '{title}\n{url}\n'
 
