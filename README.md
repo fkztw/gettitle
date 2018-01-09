@@ -41,16 +41,53 @@ optional arguments:
 ## Examples  
   
 ```  
-$ gettitle "https://blog.m157q.tw"  
+$ gettitle blog.m157q.tw  
+================================================================================  
+Home | Just for noting  
+https://blog.m157q.tw/  
+  
+================================================================================  
+Copied to clipboard.  
+```  
+  
+```  
+$ gettitle -s md blog.m157q.tw  
+================================================================================  
+[Home | Just for noting](https://blog.m157q.tw/)  
+  
+================================================================================  
+Copied to clipboard.  
+```  
+  
+```  
+$ gettitle -s rst blog.m157q.tw  
+================================================================================  
+`Home | Just for noting <https://blog.m157q.tw/>`_  
+  
+================================================================================  
+Copied to clipboard.  
+```  
+  
+```  
+$ gettitle blog.m157q.tw blog.m157q.tw  
+================================================================================  
+Home | Just for noting  
+https://blog.m157q.tw/  
   
 Home | Just for noting  
 https://blog.m157q.tw/  
+  
+================================================================================  
+Copied to clipboard.  
 ```  
   
 ```  
-$ gettitle -m "https://blog.m157q.tw"  
-  
+$ gettitle -c -s md blog.m157q.tw blog.m157q.tw  
+================================================================================  
 [Home | Just for noting](https://blog.m157q.tw/)  
+[Home | Just for noting](https://blog.m157q.tw/)  
+================================================================================  
+Copied to clipboard.  
 ```  
   
 ---  
