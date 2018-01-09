@@ -21,7 +21,7 @@ Currently support auto copy to clipboard via `xclip`.
 ## Usage  
   
 ```  
-usage: gettitle [-h] [-s {md,rst}] [-d] url [url ...]  
+usage: gettitle [-h] [-s {md,rst}] [-c] [-d] url [url ...]  
   
 positional arguments:  
   url                   url(s) of the webpage  
@@ -31,6 +31,8 @@ optional arguments:
   -s {md,rst}, --syntax {md,rst}  
                         choose output syntax. 'md' for Markdown, 'rst' for  
                         reStructuredText.  
+  -c, --compact         output in compact mode. (No empty line between each  
+                        result.)  
   -d, --debug           print out webpage source code and title for debugging  
 ```  
   

@@ -40,6 +40,11 @@ def get_args():
         help="choose output syntax. 'md' for Markdown, 'rst' for reStructuredText.",
     )
     p.add_argument(
+        '-c', '--compact',
+        action='store_true',
+        help="output in compact mode. (No empty line between each result.)",
+    )
+    p.add_argument(
         '-d', '--debug',
         action='store_true',
         help="print out webpage source code and title for debugging",
@@ -123,7 +128,9 @@ def get_titles_and_urls(browser, args):
             continue
         else:
             s = combine_title_and_url(args, title, url)
-            titles_and_urls.append(s + '\n')
+            if not args.compact:
+                s += '\n'
+            titles_and_urls.append(s)
 
         if args.debug:
             print(title, type(title))
@@ -141,8 +148,7 @@ def copy_result_to_clipboard_for_users(titles_and_urls, debug=False):
     '''
     This function currently only support Linxu users with `xclip` installed.
     '''
-    # [:-1] to prevent the last '\n' to be copied.
-    text = '\n'.join(titles_and_urls)[:-1]
+    text = '\n'.join(titles_and_urls)
     try:
         pyperclip.copy(text)
     except Exception as e:
