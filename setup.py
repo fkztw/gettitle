@@ -18,7 +18,7 @@ setup(
     scripts=['gettitle/bin/gettitle'],
     install_requires=install_requires,
     name='gettitle',
-    version='1.1.0',
+    version='1.1.1',
     author='Shun-Yi Jheng',
     author_email='M157q.tw@gmail.com',
     url="https://github.com/M157q/gettitle",
