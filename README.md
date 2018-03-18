@@ -41,6 +41,7 @@ optional arguments:
   
 ## Examples  
   
+### plaintext  
 ```  
 $ gettitle blog.m157q.tw  
 ================================================================================  
@@ -51,6 +52,7 @@ https://blog.m157q.tw/
 Copied to clipboard.  
 ```  
   
+### Markdown  
 ```  
 $ gettitle -s md blog.m157q.tw  
 ================================================================================  
@@ -60,6 +62,7 @@ $ gettitle -s md blog.m157q.tw
 Copied to clipboard.  
 ```  
   
+### reStructuredText  
 ```  
 $ gettitle -s rst blog.m157q.tw  
 ================================================================================  
@@ -69,6 +72,7 @@ $ gettitle -s rst blog.m157q.tw
 Copied to clipboard.  
 ```  
   
+### Multiple URLs  
 ```  
 $ gettitle blog.m157q.tw blog.m157q.tw  
 ================================================================================  
@@ -82,6 +86,7 @@ https://blog.m157q.tw/
 Copied to clipboard.  
 ```  
   
+### Compact mode  
 ```  
 $ gettitle -c -s md blog.m157q.tw blog.m157q.tw  
 ================================================================================  
