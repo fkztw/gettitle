@@ -10,7 +10,10 @@
 ## Requirements  
   
 + Selenium  
-    + [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads)  
+    + ChromeDriver  
+        + You need to download the [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and put it into some dir which is in your `$PATH`.  
+        + Make sure the version of Chrome is matachable with the downloaded ChromeDriver executable.  
+        + If you are Arch Linux user, you can install ChromeDriver via `aur/chromedriver`.  
 + Pyperclip  
   
 ---  
