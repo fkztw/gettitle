@@ -9,7 +9,9 @@
   
 ## Requirements  
   
-+ [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads)  
++ Selenium  
+    + [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads)  
++ Pyperclip  
   
 ---  
   
