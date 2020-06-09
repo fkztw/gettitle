@@ -105,4 +105,5 @@ Copied to clipboard.
   
 ## Testing  
   
-`$ python -m unittest`  
+`$ poetry install`
+`$ make test`  
