@@ -6,7 +6,11 @@ authors = ["Frank Jheng <M157q.tw@gmail.com>"]
 license = "MIT"
 repository = "https://github.com/M157q/gettitle"
 keywords = ["cli", "webpage", "title"]
-platforms = ["Linux"]
+
+# poetry hasn't support platforms tag
+# But it appears in the code <https://github.com/python-poetry/poetry/blob/845ae55c3c85714e4234c9ad46d3c8665f2592db/poetry/masonry/metadata.py#L12>
+# platforms = ["Linux"]
+
 classifiers=[
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
