@@ -20,6 +20,8 @@
 
 ## Installation
 
+Requires `pip >= 19.0`
+
 `$ pip install git+https://github.com/M157q/gettitle`
 
 ---
