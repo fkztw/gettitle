@@ -108,4 +108,5 @@ Copied to clipboard.
 ## Testing
 
 `$ poetry install`
+
 `$ make test`
