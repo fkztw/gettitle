@@ -1,3 +1,9 @@
+# pyenv
+.python-version
+
+# python
 *.egg-info
 __pycache__
+
+# vim
 *.sw*
