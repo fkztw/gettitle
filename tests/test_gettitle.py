@@ -138,21 +138,20 @@ class TestGetTitlesAndUrls(unittest.TestCase):
             url
         )
 
-    def test_hackpad(self):
-        ''' Hackpad title is returned in unicode format. '''
+    def test_hackmd(self):
 
         self.args.urls = [
-            "https://hackpad.com/iToolMan-T-cOJlcwLntzx"
+            "https://hackmd.io/@M157q/r1buKuC2L"
         ]
         s = gettitle.get_titles_and_urls(self.br, self.args)[0]
         title, url = s.strip().split('\n')
 
         self.assertEqual(
-            "iToolMan 工具人帽T討論 - hackpad.com",
+            "Gettitle 標題測試 - HackMD",
             title
         )
         self.assertEqual(
-            "https://hackpad.com/iToolMan-T-cOJlcwLntzx",
+            "https://hackmd.io/@M157q/r1buKuC2L",
             url
         )
 
@@ -160,7 +159,7 @@ class TestGetTitlesAndUrls(unittest.TestCase):
         ''' Ruten title is returned in big5 format. '''
 
         self.args.urls = [
-            "http://www.ruten.com.tw/"
+            "https://www.ruten.com.tw/"
         ]
         s = gettitle.get_titles_and_urls(self.br, self.args)[0]
         title, url = s.strip().split('\n')
@@ -170,7 +169,7 @@ class TestGetTitlesAndUrls(unittest.TestCase):
             title
         )
         self.assertEqual(
-            "http://www.ruten.com.tw/",
+            "https://www.ruten.com.tw/",
             url
         )
 
@@ -180,11 +179,16 @@ class TestGetTitlesAndUrls(unittest.TestCase):
         self.args.urls = [
             "https://www.dcard.tw/f/bg/p/706907"
         ]
-        s = gettitle.get_titles_and_urls(self.br, self.args)[0][:-1]
+        s = gettitle.get_titles_and_urls(self.br, self.args)[0]
+        title, url = s.strip().split('\n')
 
         self.assertEqual(
-            "駕照 附贈閃光一枚 - Dcard" + "\n" + "https://www.dcard.tw/f/bg/p/706907",
-            s
+            "駕照 附贈閃光一枚 - 感情板 | Dcard",
+            title
+        )
+        self.assertEqual(
+            "https://www.dcard.tw/f/bg/p/706907",
+            url
         )
 
 
