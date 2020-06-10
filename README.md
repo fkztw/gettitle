@@ -21,7 +21,7 @@
 
 ## Installation
 
-Requires `pip >= 19.0`
+Requires `pip >= 19.0` (Because of using `Poetry` and `pyproject.toml`)
 
 `$ pip install git+https://github.com/M157q/gettitle`
 
