@@ -15,6 +15,7 @@
         + Make sure the version of Chrome is matachable with the downloaded ChromeDriver executable.
         + If you are Arch Linux user, you can install ChromeDriver via `aur/chromedriver`.
 + Pyperclip
+    - In order to copy the result into clipboard.
 
 ---
 
