@@ -199,7 +199,7 @@ class TestMD(unittest.TestCase):
         self.args.urls = ["http://google.com"]
         title_and_url = gettitle.get_titles_and_urls(self.br, self.args)[0].strip()
 
-        self.assertRegex(title_and_url, "\[.*\]\(.*\)")
+        self.assertRegex(title_and_url, r"\[.*\]\(.*\)")
 
     def tearDown(self):
         del self.args
