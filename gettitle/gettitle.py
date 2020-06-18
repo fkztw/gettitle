@@ -40,6 +40,11 @@ def get_args():
         help="choose output syntax. 'md' for Markdown, 'rst' for reStructuredText.",
     )
     p.add_argument(
+        '-ul', '--unordered-list',
+        action='store_true',
+        help="Enable this option for using Unordered List. Only works when syntax is Markdown or reStructuredText.",
+    )
+    p.add_argument(
         '-c', '--compact',
         action='store_true',
         help="output in compact mode. (No empty line between each result.)",
@@ -60,8 +65,16 @@ def combine_title_and_url(args, title, url):
     if args.syntax == "md":
         title = title.replace('[', r'\[').replace(']', r'\]')
         s = "[{title}]({url})"
+
+        if args.unordered_list:
+            s = "- " + s
+
     elif args.syntax == "rst":
         s = "`{title} <{url}>`_"
+
+        if args.unordered_list:
+            s = "* " + s
+
     else:
         s = "{title}\n{url}"
 

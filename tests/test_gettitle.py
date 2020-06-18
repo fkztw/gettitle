@@ -226,3 +226,25 @@ class TestRST(unittest.TestCase):
     def tearDown(self):
         del self.args
         gettitle.unset_browser(self.br)
+
+
+class TestUnorderedList(unittest.TestCase):
+    ''' Test for `-ul` option. '''
+
+    def setUp(self):
+        self.args = Mock(urls=["https://google.com"], unordered_list=True, debug=False)
+        self.br = gettitle.set_browser()
+
+    def test_markdown(self):
+        self.args.syntax = 'md'
+        title_and_url = gettitle.get_titles_and_urls(self.br, self.args)[0].strip()
+        self.assertEqual(title_and_url, "- [Google](https://www.google.com/)")
+
+    def test_restructuredtext(self):
+        self.args.syntax = 'rst'
+        title_and_url = gettitle.get_titles_and_urls(self.br, self.args)[0].strip()
+        self.assertEqual(title_and_url, "* `Google <https://www.google.com/>`_")
+
+    def tearDown(self):
+        del self.args
+        gettitle.unset_browser(self.br)
