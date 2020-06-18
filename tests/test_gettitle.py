@@ -248,3 +248,20 @@ class TestUnorderedList(unittest.TestCase):
     def tearDown(self):
         del self.args
         gettitle.unset_browser(self.br)
+
+
+class TestCompact(unittest.TestCase):
+    ''' Test for `-c` option. '''
+
+    def setUp(self):
+        self.args = Mock(urls=["https://google.com"], compact=True, debug=False)
+        self.br = gettitle.set_browser()
+
+    def test_compact(self):
+        title_and_url = gettitle.get_titles_and_urls(self.br, self.args)[0].strip()
+        self.assertEqual(title_and_url, "Google\nhttps://www.google.com/")
+        self.assertNotEqual(title_and_url, "Google\nhttps://www.google.com/\n")
+
+    def tearDown(self):
+        del self.args
+        gettitle.unset_browser(self.br)
