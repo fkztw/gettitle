@@ -191,6 +191,23 @@ class TestGetTitlesAndUrls(unittest.TestCase):
             url
         )
 
+    def test_techcrunch(self):
+        ''' Test TechCrunch url. Title should not be "502 Bad Gateway Error". '''
+        self.args.urls = [
+            "https://techcrunch.com/2020/07/15/twitter-hacker-admin-scam/"
+        ]
+        s = gettitle.get_titles_and_urls(self.br, self.args)[0]
+        title, url = s.strip().split('\n')
+
+        self.assertEqual(
+            "A hacker used Twitter’s own ‘admin’ tool to spread cryptocurrency scam | TechCrunch",
+            title
+        )
+        self.assertEqual(
+            "https://techcrunch.com/2020/07/15/twitter-hacker-admin-scam/",
+            url
+        )
+
 
 class TestMD(unittest.TestCase):
     ''' Test for `-s md` option, output should be in Markdown syntax. '''
