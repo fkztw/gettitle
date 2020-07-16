@@ -174,7 +174,7 @@ class TestGetTitlesAndUrls(unittest.TestCase):
         )
 
     def test_dcard(self):
-        ''' grab dcard title with dryscrape which supports javascript. '''
+        ''' grab dcard title for testing javascript webpage. '''
 
         self.args.urls = [
             "https://www.dcard.tw/f/bg/p/706907"
