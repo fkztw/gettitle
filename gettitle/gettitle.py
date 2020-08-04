@@ -24,7 +24,9 @@ def unset_browser(browser):
 
 
 def get_args():
-    p = argparse.ArgumentParser()
+    p = argparse.ArgumentParser(
+        description='Get webpage title(s) by url(s) from terminal.'
+    )
     p.add_argument(
         'urls',
         metavar='url',
