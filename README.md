@@ -30,7 +30,9 @@ Requires `pip >= 19.0` (Because of using `Poetry` and `pyproject.toml`)
 ## Usage
 
 ```
-usage: gettitle [-h] [-s {md,rst}] [-c] [-d] url [url ...]
+usage: gettitle [-h] [-s {md,rst}] [-ul] [-c] [-d] url [url ...]
+
+Get webpage title(s) by url(s) from terminal.
 
 positional arguments:
   url                   url(s) of the webpage
@@ -40,6 +42,9 @@ optional arguments:
   -s {md,rst}, --syntax {md,rst}
                         choose output syntax. 'md' for Markdown, 'rst' for
                         reStructuredText.
+  -ul, --unordered-list
+                        Enable this option for using Unordered List. Only
+                        works when syntax is Markdown or reStructuredText.
   -c, --compact         output in compact mode. (No empty line between each
                         result.)
   -d, --debug           print out webpage source code and title for debugging
