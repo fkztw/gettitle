@@ -16,6 +16,11 @@ def set_browser():
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument('user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36"')
+    options.add_argument('accept="text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"')
+    options.add_argument('accept-charset="ISO-8859-1,utf-8;q=0.7,*;q=0.3"')
+    options.add_argument('accept-encoding="none"')
+    options.add_argument('accept-language="en-US,en;q=0.8"')
+    options.add_argument('connection="keep-alive"')
 
     browser = webdriver.Chrome(options=options)
     return browser
