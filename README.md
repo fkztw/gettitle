@@ -9,8 +9,6 @@
 
 ## Requirements
 
-+ Nodes.js >= 10.0 (Optional)
-    + Might Need by [cfscrape](https://github.com/Anorov/cloudflare-scrape) to solve Cloudflare's obfuscated JavaScript challenge.
 + ChromeDriver (Optional)
     + You need to install Google Chrome of course.
     + Used by Selenium in the project for some special websites.
