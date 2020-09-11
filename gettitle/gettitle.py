@@ -184,6 +184,19 @@ def print_titles_and_urls(titles_and_urls):
         print('=' * 80)
 
 
+def clipboard_available():
+    copy_board, paste_board = pyperclip.determine_clipboard()
+    no_copy_board, no_paste_board = pyperclip.init_no_clipboard()
+
+    if repr(type(copy_board)) == repr(type(no_copy_board)):
+        return False
+
+    if repr(type(paste_board)) == repr(type(no_paste_board)):
+        return False
+
+    return True
+
+
 def copy_result_to_clipboard_for_users(titles_and_urls, debug=False):
     '''
     This function currently only support Linxu users with `xclip` installed.
@@ -210,7 +223,9 @@ def main():
         unset_browser(browser)
 
     print_titles_and_urls(titles_and_urls)
-    copy_result_to_clipboard_for_users(titles_and_urls, args.debug)
+
+    if clipboard_available():
+        copy_result_to_clipboard_for_users(titles_and_urls, args.debug)
 
 
 if __name__ == '__main__':
