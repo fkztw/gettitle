@@ -15,10 +15,17 @@ import gettitle.handles
 def set_browser():
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
+
+    # Prevent from "from tab crashed error"
+    # <https://stackoverflow.com/questions/53902507/unknown-error-session-deleted-because-of-page-crash-from-unknown-error-cannot>
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+
+    # Bypass CloudFlare
+    # <https://stackoverflow.com/questions/53039551/selenium-webdriver-modifying-navigator-webdriver-flag-to-prevent-selenium-detec/53040904#53040904>
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option('useAutomationExtension', False)
+
     browser = webdriver.Chrome(options=options)
 
     return browser
