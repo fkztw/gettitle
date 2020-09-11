@@ -9,6 +9,8 @@
 
 ## Requirements
 
++ Nodes.js >= 10.0 (Optional)
+    + Might Need by [cfscrape](https://github.com/Anorov/cloudflare-scrape) to solve Cloudflare's obfuscated JavaScript challenge.
 + ChromeDriver (Optional)
     + You need to install Google Chrome of course.
     + Used by Selenium in the project for some special websites.
@@ -16,9 +18,9 @@
     + Make sure the version of Chrome is matachable with the downloaded ChromeDriver executable.
     + If you are Arch Linux user, you can install ChromeDriver via `aur/chromedriver`.
 + xclip (Optional, If you are Linux User and want to autocopy result to clipboard.)
-    - Used by Pyperclip on Linux in this project.
+    + Used by Pyperclip on Linux in this project.
         - No additional modules required for Windows and Mac users according to [pyperclip](https://github.com/asweigart/pyperclip).
-    - For autocopy result into your clipboard, so you can just paste it to wherever you want.
+    + For autocopy result into your clipboard, so you can just paste it to wherever you want.
 
 ---
 
