@@ -110,8 +110,6 @@ def visit_with_browser(browser, checked_url, debug=False):
     except Exception as e:
         gettitle.handles.handle_error(e, debug)
     else:
-        if debug:
-            print(browser.page_source)
         title = browser.title
         real_url = browser.current_url
 
@@ -123,9 +121,10 @@ def visit_with_browser(browser, checked_url, debug=False):
             except Exception as e:
                 gettitle.handles.handle_error(e, debug)
             else:
-                if debug:
-                    print(browser.page_source)
                 break
+
+    if debug:
+        print(browser.page_source)
 
     return title, real_url
 
