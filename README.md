@@ -9,13 +9,16 @@
 
 ## Requirements
 
-+ Selenium
-    + ChromeDriver
-        + You need to download the [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and put it into some dir which is in your `$PATH`.
-        + Make sure the version of Chrome is matachable with the downloaded ChromeDriver executable.
-        + If you are Arch Linux user, you can install ChromeDriver via `aur/chromedriver`.
-+ Pyperclip
-    - In order to copy the result into clipboard.
++ ChromeDriver (Optional)
+    + You need to install Google Chrome of course.
+    + Used by Selenium in the project for some special websites.
+    + You need to download the [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and put it into some dir which is in your `$PATH`.
+    + Make sure the version of Chrome is matachable with the downloaded ChromeDriver executable.
+    + If you are Arch Linux user, you can install ChromeDriver via `aur/chromedriver`.
++ xclip (Optional, If you are Linux User and want to autocopy result to clipboard.)
+    - Used by Pyperclip on Linux in this project.
+        - No additional modules required for Windows and Mac users according to [pyperclip](https://github.com/asweigart/pyperclip).
+    - For autocopy result into your clipboard, so you can just paste it to wherever you want.
 
 ---
 
