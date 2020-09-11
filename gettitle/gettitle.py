@@ -5,6 +5,8 @@ import sys
 import urllib
 
 import pyperclip
+import cfscrape
+from lxml.html import fromstring
 from selenium import webdriver
 
 import gettitle.special_sites
@@ -103,22 +105,36 @@ def check_and_reconstruct_url(url):
 
 
 def visit_with_browser(browser, checked_url, debug=False):
+    '''
+    Visit special websites which need JavaScript click action with selenium
+    Visit normal websites with cfscrape.
+    '''
     title, real_url = None, None
 
+    # Visit with cfscrape
     try:
-        browser.get(checked_url)
+        scraper = cfscrape.create_scraper()
+        response = scraper.get(checked_url)
+        title = fromstring(response.content).findtext(".//title")
+        real_url = response.url
     except Exception as e:
         gettitle.handles.handle_error(e, debug)
     else:
         if debug:
-            print(browser.page_source)
-        title = browser.title
-        real_url = browser.current_url
+            print(response.content)
 
+    # Check if this website needs to be visited with Selenium
     for url, handler in gettitle.special_sites.URL_AND_HANDLER_MAPPING.items():
         if url in real_url:
-            title, real_url = handler(browser)
-            break
+            try:
+                browser.get(checked_url)
+                title, real_url = handler(browser)
+            except Exception as e:
+                gettitle.handles.handle_error(e, debug)
+            else:
+                if debug:
+                    print(browser.page_source)
+                break
 
     return title, real_url
 
