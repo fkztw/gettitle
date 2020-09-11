@@ -200,7 +200,7 @@ class TestGetTitlesAndUrls(unittest.TestCase):
         title, url = s.strip().split('\n')
 
         self.assertEqual(
-            "A hacker used Twitter’s own ‘admin’ tool to spread cryptocurrency scam | TechCrunch",
+            "A hacker used Twitter’s own ‘admin’ tool to spread cryptocurrency scam – TechCrunch",
             title
         )
         self.assertEqual(
@@ -216,15 +216,15 @@ class TestMD(unittest.TestCase):
         self.args = Mock(urls=None, syntax="md", debug=False)
         self.br = gettitle.set_browser()
 
+    def tearDown(self):
+        del self.args
+        gettitle.unset_browser(self.br)
+
     def test_google(self):
         self.args.urls = ["http://google.com"]
         title_and_url = gettitle.get_titles_and_urls(self.br, self.args)[0].strip()
 
         self.assertRegex(title_and_url, r"\[.*\]\(.*\)")
-
-    def tearDown(self):
-        del self.args
-        gettitle.unset_browser(self.br)
 
 
 class TestRST(unittest.TestCase):
@@ -234,15 +234,15 @@ class TestRST(unittest.TestCase):
         self.args = Mock(urls=None, syntax="rst", debug=False)
         self.br = gettitle.set_browser()
 
+    def tearDown(self):
+        del self.args
+        gettitle.unset_browser(self.br)
+
     def test_google(self):
         self.args.urls = ["http://google.com"]
         title_and_url = gettitle.get_titles_and_urls(self.br, self.args)[0].strip()
 
         self.assertRegex(title_and_url, "`.* <.*>`_")
-
-    def tearDown(self):
-        del self.args
-        gettitle.unset_browser(self.br)
 
 
 class TestUnorderedList(unittest.TestCase):
@@ -251,6 +251,10 @@ class TestUnorderedList(unittest.TestCase):
     def setUp(self):
         self.args = Mock(urls=["https://google.com"], unordered_list=True, debug=False)
         self.br = gettitle.set_browser()
+
+    def tearDown(self):
+        del self.args
+        gettitle.unset_browser(self.br)
 
     def test_markdown(self):
         self.args.syntax = 'md'
@@ -262,10 +266,6 @@ class TestUnorderedList(unittest.TestCase):
         title_and_url = gettitle.get_titles_and_urls(self.br, self.args)[0].strip()
         self.assertEqual(title_and_url, "* `Google <https://www.google.com/>`_")
 
-    def tearDown(self):
-        del self.args
-        gettitle.unset_browser(self.br)
-
 
 class TestCompact(unittest.TestCase):
     ''' Test for `-c` option. '''
@@ -274,11 +274,11 @@ class TestCompact(unittest.TestCase):
         self.args = Mock(urls=["https://google.com"], compact=True, debug=False)
         self.br = gettitle.set_browser()
 
+    def tearDown(self):
+        del self.args
+        gettitle.unset_browser(self.br)
+
     def test_compact(self):
         title_and_url = gettitle.get_titles_and_urls(self.br, self.args)[0].strip()
         self.assertEqual(title_and_url, "Google\nhttps://www.google.com/")
         self.assertNotEqual(title_and_url, "Google\nhttps://www.google.com/\n")
-
-    def tearDown(self):
-        del self.args
-        gettitle.unset_browser(self.br)
