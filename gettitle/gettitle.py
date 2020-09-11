@@ -113,6 +113,8 @@ def visit_with_browser(browser, checked_url, debug=False):
 
     # Visit with cfscrape
     try:
+        if debug:
+            print("visit with cfscrape: {}".format(checked_url))
         scraper = cfscrape.create_scraper()
         response = scraper.get(checked_url)
         title = fromstring(response.content).findtext(".//title")
@@ -126,6 +128,8 @@ def visit_with_browser(browser, checked_url, debug=False):
     # Check if this website needs to be visited with Selenium
     for url, handler in gettitle.special_sites.URL_AND_HANDLER_MAPPING.items():
         if url in real_url:
+            if debug:
+                print("visit with selenium: {}".format(checked_url))
             try:
                 browser.get(checked_url)
                 title, real_url = handler(browser)
